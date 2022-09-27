@@ -1,0 +1,24 @@
+# Electrostatic Thrust
+
+**Method** : `GET`
+
+**Auth required** : `False`
+
+## Success Response
+
+**Code** : `200 OK`
+
+**Content example** :
+
+```json
+{
+    
+   
+}
+```
+
+## Error Responses
+
+**Code** : `404 NOT FOUND`
+
+**Content** : `Not Found`
