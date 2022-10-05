@@ -1,2 +1,2 @@
-..Calculation of performance threshold for free stream static conditions
-assuming vacumn conditions beyond LEO Mo=PoAoMo/To
+This class will calculate the performance threshold for Radio Frequency Ion Thrusters
+assuming main chamber pre-ionization and operation beyond GEO where PV = nRT
