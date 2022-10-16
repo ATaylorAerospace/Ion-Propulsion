@@ -4,7 +4,7 @@ from numpy import pi, abs, sqrt, cos, sin, arccos, arctan, tan
 
 class MarkleyKESolver:
   """
-    Solve Kepler's Equation.
+    Solve Kepler's Equation
     
     This class implements a solver for Kepler's Equation:
     .. math::
