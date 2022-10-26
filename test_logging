@@ -2,6 +2,7 @@ import logging
 import os
 import sys
 
+
 from pyfstat.logging import _get_default_logger, set_up_logger
 
 
