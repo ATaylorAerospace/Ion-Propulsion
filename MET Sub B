@@ -1,0 +1,9 @@
+import math
+
+t = input("What is the thrust in Newtons? ")
+m = 1.0 * math.pow(10, -9)
+v = math.sqrt(m)
+
+thrust = m*v*t
+
+print(thrust)
