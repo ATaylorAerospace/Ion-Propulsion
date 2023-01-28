@@ -640,3 +640,20 @@ def phaseAngle(pos, los='-z'):
       result[i] = numpy.arccos( numpy.sum((-pos[i,::]) * (-l.los)) / \
                   numpy.sqrt(numpy.sum(pos[i,::]**2)) )
     return result/numpy.pi*180.
+    
+    """
+    D = (v/c) * t
+
+Where, t is the time.
+
+t = (2*pi)*(D)^2/(m*c^2)
+
+Where, m is the mass of the object.
+
+m = (2/3)*M*(v/c)^2
+
+Where, M is the mass of the object and v is its speed.
+
+M = (2/3)*(5 x 10^12)(3.1 x 10^7)(1.5 x 10^8)(1/2)^2
+
+v = (1/2)(3.1 x 10^7)(
