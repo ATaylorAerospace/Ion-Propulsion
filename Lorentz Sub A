@@ -5,6 +5,7 @@ r = sp.symbols('r')
 V = sp.symbols('V')
 mu = sp.symbols('mu')
 
+
 F = sp.F()
 
 force = sp.vector([r * V])
