@@ -15,6 +15,7 @@ class MarkleyKESolver:
   """
   
   pi2 = pi**2
+ """
 
   def _alpha(self, e, M):
     """
