@@ -1,6 +1,47 @@
-import numpy
-from numpy import pi, abs, sqrt, cos, sin, arccos, arctan, tan
+import numpy as np
 
+class KeplerLEOVelocity:
+
+    def __init__(self, a, per, e=0, tau=0, Omega=0, w=0, i=0, ks=None):
+        """Constructor for Keplerian orbital elements.
+
+        The orbital elements defined this way do 
+        not change the plane of the orbit, but rather represent a 
+        rotation of the orbit in the plane.
+
+        Parameters
+        ----------
+        a : float
+            Semi-major axis
+        per : float 
+            Orbital period
+        e : float, optional
+            Orbital eccentricity (0-1).
+        tau : float, optional
+            Time of perihelion passage.
+        Omega : float, optional 
+            Longitude of the ascending node [deg].
+        w : float, optional
+            Longitude of perihelion [deg]
+        i : float, optional
+            Orbit inclination [deg].
+        ks : Class object, optional
+            The solver for Kepler's Equation. Default is the
+            `MarkleyKESolver`. Each solver must have a `getE`
+            method, which takes either a float or array of float
+            of mean anomalies and the eccentricity, and returns
+            the associated eccentric anomalies.
+
+        Attributes
+        ----------
+        i : float
+            Orbit inclination [deg].
+        w : float
+            Longitude of perihelion [deg]
+        Omega : float
+            Longitude of the ascending node [deg]
+        e : float
+            Eccentricity
 
 class MarkleyKESolver:
   """"
@@ -654,6 +695,10 @@ Where, m is the mass of the object.
 m = (2/3)*M*(v/c)^2
 
 Where, M is the mass of the object and v is its speed.
+
+M = (2/3)*(5 x 10^12)(3.1 x 10^7)(1.5 x 10^8)(1/2)^2
+
+v = (1/2)(3.1 x 10^7)(
 
 M = (2/3)*(5 x 10^12)(3.1 x 10^7)(1.5 x 10^8)(1/2)^2
 
