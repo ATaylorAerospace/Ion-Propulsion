@@ -1,13 +1,15 @@
 import sympy as sp
-from sympy.physics.mechanics.mechanics import Vector
+from sympy.physics.mechanics import dynamicsymbols, ReferenceFrame, Point
 
-r = sp.symbols('r')
-V = sp.symbols('V')
-mu = sp.symbols('mu')
+r, theta = dynamicsymbols('r theta')
+V = dynamicsymbols('V')
+mu = dynamicsymbols('mu') 
+
+N = ReferenceFrame('N')
+P = Point('P')
+P.set_vel(N, V * N.x)
+
+force = mu * V**2 * P.pos_from(N).normalize()
 
 
-F = sp.F()
 
-force = sp.vector([r * V])
-
-mu * force
