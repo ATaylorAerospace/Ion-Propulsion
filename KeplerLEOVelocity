@@ -668,20 +668,21 @@ def phaseAngle(pos, los='-z'):
         it returns a single value or an array. 
   """
   from PyAstronomy.pyasl import LineOfSight
+
+def calculate_phase_angle(los, pos):
+
   l = LineOfSight(los)
+  
   if pos.shape == (3,):
-    # It is a single value
-    return numpy.arccos( numpy.sum(-pos * (-l.los)) / \
-            numpy.sqrt(numpy.sum(pos**2)))/numpy.pi*180. 
+    # Single position
+    return np.arccos(np.dot(-pos, -l.los) / np.linalg.norm(pos)) / np.pi * 180
+
   else:
-    # It is an array of positions
-    N = len(pos[::,0])
-    result = numpy.zeros(N)
-    for i in xrange(N):
-      print i, numpy.sum((-pos[i,::]) * (-l.los)), pos[i,::]
-      result[i] = numpy.arccos( numpy.sum((-pos[i,::]) * (-l.los)) / \
-                  numpy.sqrt(numpy.sum(pos[i,::]**2)) )
-    return result/numpy.pi*180.
+    # Multiple positions
+    result = np.zeros(len(pos[:,0]))
+    for i in range(len(pos[:,0])):
+      result[i] = np.arccos(np.dot(-pos[i], -l.los) / np.linalg.norm(pos[i]))
+    return result / np.pi * 18
     
     """
     D = (v/c) * t
