@@ -1,4 +1,4 @@
- Revised model for an ion thruster defining physical constants, thruster parameters, and propulsion equations. 
+# Revised model for an ion thruster defining physical constants, thruster parameters, and propulsion equations. 
 # It calculates performance metrics like thrust, temperature, total energy, and mass flow rate.  
 
 # ---- PHYSICAL CONSTANTS
