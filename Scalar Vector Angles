@@ -96,18 +96,53 @@ def positionAngle(ra1, dec1, ra2, dec2, positive=True):
   """
 
   # Convert into rad               
-  rarad1 = pyaC.degtorad(ra1)
-  rarad2 = pyaC.degtorad(ra2)
-  dcrad1 = pyaC.degtorad(dec1)
-  dcrad2 = pyaC.degtorad(dec2)
+import numpy as np
+from math import acos
+from typing import Tuple
 
-  radif  = rarad2 - rarad1
+def calculate_phase_angle(
+    los: LineOfSight, 
+    positions: np.ndarray
+) -> np.ndarray:
+    """
+    Calculate phase angle between line of sight 
+    and multiple positions.
 
-  angle  = arctan2(sin(radif), cos(dcrad1)*tan(dcrad2)-sin(dcrad1)*cos(radif))
+    Parameters
+    ----------
+    los : LineOfSight
+        Line of sight direction
+    positions : np.ndarray
+        (N, 3) array of XYZ positions
+    
+    Returns
+    -------
+    np.ndarray
+        Phase angles in radians
+    
+    """
 
-  result = pyaC.radtodeg(angle)
-  
-  if positive and (result < 0.0):
-    result+= 360.0
+    los_vector = np.asarray(los.los)
+    
+    if positions.ndim == 1:
+        # Single position
+        return acos(np.dot(-positions, -los_vector) /
+                    np.linalg.norm(positions))
+    
+    # Multiple positions
+    result = np.empty(len(positions))
+    for i, pos in enumerate(positions):
+        result[i] = acos(np.dot(-pos, -los_vector) / 
+                         np.linalg.norm(pos))
+        
+    return result
 
-  return result  
+def main(los: LineOfSight, 
+         positions: Tuple[float, np.ndarray]) -> np.ndarray:
+    
+    pos_array = np.asarray(positions)
+    angles = calculate_phase_angle(los, pos_array)
+    
+    print(f"Phase angles: {angles}")
+    
+    return angles
