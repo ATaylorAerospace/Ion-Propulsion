@@ -1,60 +1,47 @@
 import logging
-import os
-import sys
+from pathlib import Path
+from typing import Dict
+
+def get_logger() -> logging.Logger:
+    """Get root logger or default pyfstat logger if no handlers."""
+    logger = logging.getLogger()
+    if not logger.hasHandlers():
+        return logging.getLogger("pyfstat")
+    return logger
+
+def setup_logging(
+    log_file: Path, 
+    log_label: str = "app",
+    append: bool = True
+) -> logging.Logger:
+    """Set up logging to file and stdout stream."""
+
+    logger = get_logger()
+    
+    if not append:
+        logger.handlers.clear()
+    
+    file_handler = logging.FileHandler(log_file / f"{log_label}.log")
+    stream_handler = logging.StreamHandler()
+    
+    logger.addHandler(file_handler)
+    logger.addHandler(stream_handler)
+
+    return logger
 
 
-from pyfstat.logging import _get_default_logger, set_up_logger
+def check_file_handler(handler: logging.FileHandler, path: Path) -> None:
+    """Validate file handler configuration."""
+
+    assert isinstance(handler, logging.FileHandler)
+    assert handler.baseFilename == str(path)
+    assert path.is_file()
 
 
-def _check_FileHandler(handler, log_file):
-    assert type(handler) == logging.FileHandler
-    assert handler.baseFilename == log_file
-    assert os.path.isfile(log_file)
+def test_setup_logging(tmp_path: Path) -> None:
 
+    log_args = {"outdir": tmp_path, "label": "test"}
+    log_file = setup_logging(**log_args)
 
-def _check_StreamHandler(handler, stream):
-    assert type(handler) == logging.StreamHandler
-    assert handler.stream is stream
-
-
-def test__get_default_logger():
-
-    # No handlers in root: Should get pyfstat logger
-    root_logger = logging.getLogger()
-    while root_logger.hasHandlers():
-        root_logger.removeHandler(root_logger.handlers[0])
-    assert _get_default_logger() is logging.getLogger("pyfstat")
-
-    # Handler in root logger: Should get root logger
-    logging.basicConfig(stream=sys.stdout)
-    assert _get_default_logger() is logging.getLogger()
-
-
-def test_set_up_logger(tmp_path):
-
-    file_args = {"outdir": tmp_path, "label": "test_log"}
-    kwargs = {
-        "StreamHandler": {"stream": sys.stdout},
-        "FileHandler": {
-            "log_file": os.path.join(file_args["outdir"], file_args["label"] + ".log")
-        },
-    }
-
-    # Test default behaviour
-    for logger in [
-        set_up_logger(),
-        set_up_logger(append=False, streams=None, **file_args),
-    ]:
-        assert len(logger.handlers) == 1
-        handler = logger.handlers[0]
-        name = type(handler).__name__
-        globals()[f"_check_{name}"](handler=handler, **kwargs[name])
-
-    # Test append's behaviour
-    logger = set_up_logger()
-    logger = set_up_logger(**file_args)
-    assert len(logger.handlers) == 2
-    for handler in logger.handlers:
-        name = type(handler).__name__
-        globals()[f"_check_{name}"](handler=handler, **kwargs[name])
-Footer
+    check_file_handler(log_file.handlers[0], 
+                       tmp_path / f"{log_args['label']}.log")
