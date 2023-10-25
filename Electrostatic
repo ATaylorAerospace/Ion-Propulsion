@@ -1,24 +1,32 @@
-# Electrostatic Thrust
+# Defines an API endpoint to get information on electrostatic thrust calculations. 
 
-**Method** : `GET`
+# The electrostatic thrust output would include parameters like thrust force, specific impulse, efficiency, etc based on calculations using input parameters provided in the request.
 
-**Auth required** : `False`
+# This allows the ion thruster design models to retrieve the computed electrostatic performance metrics. The results can be used to optimize thruster parameters for desired thrust characteristics.
 
-## Success Response
+Returns:
+- 200 and thrust calculations on success 
+- 404 if calculations not found
+"""
 
-**Code** : `200 OK`
+def get_thrust():
+  """Get electrostatic thrust calculations"""
+  
+  # Code to compute thrust
+  
+  return {
+    "thrust": thrust_value,
+    "specific_impulse": isp,
+    # other output params
+  }
 
-**Content example** :
+@app.route("/thrust")
+def thrust():
+  """Electrostatic thrust endpoint"""
 
-```json
-{
-    
-   
-}
-```
-
-## Error Responses
-
-**Code** : `404 NOT FOUND`
-
-**Content** : `Not Found`
+  output = get_thrust()
+  
+  if output:
+    return output, 200
+  
+  return "Not found", 404
