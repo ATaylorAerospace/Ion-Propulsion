@@ -1,141 +1,43 @@
- Here is the above readme file converted to HTML format using basic markdown syntax:
+```
+This is the repository for the ion thrust propulsion engine design project.
 
-```html
-<!DOCTYPE html>
-<html lang="en">
+Here is an illustration of the ion thruster geometry and design:
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ion Thrust Propulsion Engine Design Project</title>
-    <style>
+```
+<svg width="100%" height="100%" version="1.1"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="g">
+      <stop offset="5%" stop-color="#AAA" />
+      <stop offset="95%" stop-color="#FFF" />
+    </linearGradient>
+    <circle id="o" cx="50%" cy="50%" r="6" fill="#F1F1F1" />
+    <clipPath id="clip">
+      <circle rx="20" ry="20" />
+    </clipPath>
+  </defs>
+  <g transform="matrix(1,0,0,1,-350,-349)">
+    <rect x="20" y="20" width="460" height="29" fill="#FFF" />
+    <g transform="matrix(1,0,0,1,-442,-349)">
+      <rect x="20" y="20" width="411" height="29" fill="url(#g)" />
+      <circle cx="50%" cy="50%" r="5" fill="#D80027" transform="scale(0.333,0.333)" />
+      <path d="M -3.595,59.688 C -3.834,58.076 -4.108,56.391 -4.108,54.788 C -4.108,53.205 -3.834,51.616 -3.595,50.048 C -3.272,48.484 -2.959,46.831 -2.959,45.177 C -2.959,43.534 -3.272,41.85 -3.595,40.312 C -3.834,38.79 -4.108,37.185 -4.108,35.604 C -4.108,34.021 -3.834,32.63 -3.595,31.148 C -3.272,29.633 -2.959,27.938 -2.959,26.255 C -2.959,24.572 -3.272,22.919 -3.595,21.316 C -3.834,19.731 -4.108,18.19 -4.108,16.648 C -4.108,15.056 -3.834,13.463 -3.595,12.008 C -3.272,10.543 -2.959,8.932 -2.959,7.311 C -2.959,5.688 -3.272,3.957 -3.595,2.504 C -3.834,1.051 -4.108,0 -4.108,0 Z"
+            id="path" fill="#D80027" transform="matrix(0.899,0,0,0.899,9.846,19.354)" />
+      </g>
+    </rect>
+  </g>
+</svg>
+```
 
-        /* Basic styling for readability */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
+```
+The project will be completed in several phases.
 
-        /* Header styling */
-        h1, h2, h3, h4, h5, h6 {
-            color: #333;
-            font-weight: bold;
-        }
-
-        /* Link styling */
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        a:hover, a:focus {
-            color: #0056b3;
-            text-decoration: underline;
-        }
-
-        /* Code styling */
-        code {
-            color: #333;
-            font-family: "Courier New", monospace;
-            font-size: 90%;
-            padding: 0.2em;
-            background-color: #f0f0f0;
-            border-radius: 4px;
-        }
-
-        /* Layout styling */
-        .container {
-            margin: 0 auto;
-            padding: 0 20px;
-            max-width: 800px;
-        }
-
-        /* Header & footer styling */
-        header {
-            padding: 20px 0;
-            background-color: #333;
-            color: #fff;
-        }
-
-        footer {
-            padding: 20px 0;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-        }
-
-    </style>
-</head>
-
-<body>
-
-    <header>
-        <h1>Ion Thrust Propulsion Engine Design Project</h1>
-    </header>
-
-    <main>
-        <p>This is the repository for the ion thrust propulsion engine design project. The project will involve the design of an ion thruster that can be used to power a spacecraft. The design will focus on the following: </p>
-
-        <ul>
-            <li>The ion thruster must be able to provide a specific impulse of at least 1000 seconds. </li>
-            <li>The ion thruster must be able to operate at a power level of at least 100 watts. </li>
-            <li>The ion thruster must be able to withstand a maximum discharge voltage of at least 10,000 volts. </li>
-        </ul>
-
-        <p>The project will be completed in several phases. The first phase will involve the design of the ion thruster itself. This will include the selection of the appropriate ion thruster geometry and the development of a detailed model of the ion thruster. The second phase will involve the design of the power supply for the ion thruster. This will include the selection of the appropriate power supply architecture and the development of a detailed model of the power supply. The third phase will involve the design of the control system for the ion thruster. This will include the selection of the appropriate control system architecture and the development of a detailed model of the control system. </p>
-
-        <div class="container">
-            <h2>Documentation</h2>
-
-            <p>The documentation for the project will be contained in the <code>docs</code> folder. This will include detailed designs of the ion thruster, the power supply, and the control system. It will also include documentation of the testing process and the results of the testing.</p>
-
-        </div>
-
-        <div class="container">
-            <h2>Include</h2>
-
-            <p>The <code>include</code> folder will contain the header files that will be used by the C++ files in the <code>python</code> and <code>lib</code> folders.</p>
-
-        </div>
-
-        <div class="container">
-            <h2>Python</h2>
-
-            <p>The <code>python</code> folder will contain the Python scripts that will be used to control the ion thruster and the power supply. These scripts will be used to test the ion thruster and the power supply.</p>
-
-        </div>
-
-        <div class="container">
-            <h2>Tests</h2>
-
-            <p>The <code>tests</code> folder will contain the tests that will be used to verify the functionality of the ion thruster and the power supply. These tests will include both unit tests and integration tests.</p>
-
-        </div>
-
-        <div class="container">
-            <h2>Lib</h2>
-
-            <p>The <code>lib</code> folder will contain the C++ libraries that will be used by the Python scripts in the <code>python</code> folder. These libraries will include the following: </p>
-
-            <ul>
-                <li>A C++ library that will be used to control the ion thruster.</li>
-                <li>A C++ library that will be used to control the power supply.</li>
-                <li>A C++ library that will be used to communicate with the control system.</li>
-            </ul>
-
-            <p>These libraries will be developed using the C++17 standard and will be tested using the tests in the <code>tests</code> folder.</p>
-
-        </div>
-
-    </main>
-
-    <footer>
-        <p>&copy; 2023 Company Name. All rights reserved.</p>
-    </footer>
-
-</body>
-
-</html>
+```
+<ul>
+  <li>Design an ion thruster</li>
+  <li>Design a power supply</li>
+  <li>Design a control system</li>
+</ul>
 ```
 
