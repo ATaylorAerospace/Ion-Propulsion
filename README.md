@@ -1,11 +1,19 @@
 The repo will involve ion thruster design. The design will focus on the following:
 
+<<<<<<< HEAD
+=======
 - The ion thruster must be able to provide a specific impulse of at least 1000 seconds in GEO.
 - The ion thruster must be able to operate at a power level of at least 100 watts.
 - The ion thruster must be able to withstand a maximum discharge voltage of at least 10,000 volts.
+>>>>>>> 70db49b11fdae422de98b52aac110d7aba1a382f
 
+<<<<<<< HEAD
+=======
 The project will be completed in several phases. The first phase will involve the design of the ion thruster itself. This will include the selection of the appropriate ion thruster geometry and the development of a detailed model of the ion thruster. The second phase will involve the design of the power supply for the ion thruster. This will include the selection of the appropriate power supply architecture and the development of a detailed model of the power supply. The third phase will involve the design of the control system for the ion thruster. This will include the selection of the appropriate control system architecture and the development of a detailed model of the control system.
+>>>>>>> 70db49b11fdae422de98b52aac110d7aba1a382f
 
+<<<<<<< HEAD
+=======
 **Docs**
 
 The documentation for the project will be contained in the docs folder. This will include detailed designs of the ion thruster, the power supply, and the control system. It will also include documentation of the testing process and the results of the testing.
@@ -30,3 +38,5 @@ The lib folder will contain the C++ libraries that will be used by the Python sc
 - A C++ library that will be used to control the power supply.
 - A C++ library that will be used to communicate with the control system.
 
+
+>>>>>>> 70db49b11fdae422de98b52aac110d7aba1a382f
