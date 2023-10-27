@@ -1,6 +1,6 @@
-The repo will involve the design of an ion thruster. The design will focus on the following:
+The repo will involve ion thruster design. The design will focus on the following:
 
-- The ion thruster must be able to provide a specific impulse of at least 1000 seconds.
+- The ion thruster must be able to provide a specific impulse of at least 1000 seconds in GEO.
 - The ion thruster must be able to operate at a power level of at least 100 watts.
 - The ion thruster must be able to withstand a maximum discharge voltage of at least 10,000 volts.
 
