@@ -6,7 +6,7 @@ The repo will involve the design of an ion thruster. The design will focus on th
 
 The project will be completed in several phases. The first phase will involve the design of the ion thruster itself. This will include the selection of the appropriate ion thruster geometry and the development of a detailed model of the ion thruster. The second phase will involve the design of the power supply for the ion thruster. This will include the selection of the appropriate power supply architecture and the development of a detailed model of the power supply. The third phase will involve the design of the control system for the ion thruster. This will include the selection of the appropriate control system architecture and the development of a detailed model of the control system.
 
-**Documentation**
+**Docs**
 
 The documentation for the project will be contained in the docs folder. This will include detailed designs of the ion thruster, the power supply, and the control system. It will also include documentation of the testing process and the results of the testing.
 
@@ -19,6 +19,7 @@ The include folder will contain the header files that will be used by the C++ fi
 The python folder will contain the Python scripts that will be used to control the ion thruster and the power supply. These scripts will be used to test the ion thruster and the power supply.
 
 **Tests**
+
 The tests folder will contain the tests that will be used to verify the functionality of the ion thruster and the power supply. These tests will include both unit tests and integration tests.
 
 **Lib**
