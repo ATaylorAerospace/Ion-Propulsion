@@ -1,4 +1,4 @@
-```cpp
+```cpp for inlet assuming Hollow Discharge Cathode
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
