@@ -24,9 +24,10 @@ The tests folder will contain the tests that will be used to verify the function
 
 **lib**
 
-The lib folder will contain the C++ libraries that will be used by the Python scripts in the python folder. These libraries will include the following:
+The lib folder will contain the C++ libraries that will be used by the Python scripts in the python folder. 
 
 **src**
+
 This folder contains the C++ source code files for the propulsion system, thruster, nozzle, and fuels.
 
 - A C++ library that will be used to control the ion thruster.
