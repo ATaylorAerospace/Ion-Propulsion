@@ -1,4 +1,4 @@
-```cpp Update for Hollow Discharge Cathode
+```cpp Update for Hollow Discharge Cathode assuming GEO
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
