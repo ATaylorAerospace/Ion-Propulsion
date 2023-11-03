@@ -1,6 +1,7 @@
 ```cpp Update for Hollow Discharge Cathode assuming GEO
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
+#update  <cppunit/extensions/HelperMacros.h>
 
 class GenerateInletTest : public CppUnit::TestFixture {
 public:
