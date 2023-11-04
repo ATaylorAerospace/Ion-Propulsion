@@ -1,4 +1,4 @@
-# Defines an API endpoint to get information on electrostatic thrust calculations. 
+# Defines an API endpoint to get information on electrostatic thrust calculations in GEO
 
 # The electrostatic thrust output would include parameters like thrust force, specific impulse, efficiency, etc based on calculations using input parameters provided in the request.
 
