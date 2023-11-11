@@ -1,8 +1,6 @@
 # KeplerLeo
-Initial Space Propulsion Repository - Anfängliches Ionenantriebs-Repository
-This code implements a solver for Kepler's Equation to calculate the position and motion of an orbiting body over time.
 
-KeplerLEOVelocity Class
+**KeplerLEOVelocity Class**
 
 The KeplerLEOVelocity class provides methods for calculating the orbital velocity of a low Earth orbit (LEO) satellite. The class defines several key methods that are essential for understanding and working with satellite orbits.
 
