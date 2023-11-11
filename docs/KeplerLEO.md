@@ -4,31 +4,21 @@ This code implements a solver for Kepler's Equation to calculate the position an
 
 KeplerLEOVelocity Class
 
-The KeplerLEOVelocity class represents the orbital elements that define the orientation of an orbiting body without changing the plane of the orbit. It takes in parameters like semi-major axis, orbital period, eccentricity, etc. and calculates quantities like the mean anomaly and eccentric anomaly to determine the position over time.
+The KeplerLEOVelocity class provides methods for calculating the orbital velocity of a low Earth orbit (LEO) satellite. The class defines several key methods that are essential for understanding and working with satellite orbits.
 
-The key methods are:
+**calculateKeplerianMeanMotion:** This method calculates the Keplerian mean motion of a satellite, which is the average rate at which the satellite orbits its central body. The mean motion is an important parameter for understanding the long-term behavior of a satellite's orbit.
 
-init : Constructor that initializes the orbital elements
-meanAnomaly : Calculates mean anomaly based on time
-radius : Calculates orbit radius based on time and eccentric anomaly
-xyzPos : Calculates x,y,z position based on time
-It uses the MarkleyKESolver class to numerically solve Kepler's Equation and find the eccentric anomaly from the mean anomaly and eccentricity.
+**calculateKeplerianEccentricAnomaly:** This method calculates the Keplerian eccentric anomaly of a satellite, which is a mathematical quantity that describes the position of a satellite along its orbit. The eccentric anomaly is useful for converting between the true anomaly, which is the angle between the satellite's position and the periapsis of its orbit, and the mean anomaly.
 
-The output is the orbit radius and 3D position coordinates at given points in time. This allows determining the location of an orbiting body given its orbital elements.
+**calculateTrueAnomaly:** This method calculates the true anomaly of a satellite, which is the angle between the satellite's position and the periapsis of its orbit. The true anomaly is the most commonly used measure of a satellite's position along its orbit.
 
-MarkleyKESolver Class
+**calculateOrbitalVelocity:** This method calculates the orbital velocity of a satellite, which is the speed at which the satellite is moving along its orbit. The orbital velocity is a critical parameter for understanding the satellite's behavior and for designing spacecraft trajectories.
 
-This class provides a solver to numerically calculate the eccentric anomaly E given the mean anomaly M and eccentricity e by implementing an algorithm from Markley (1995).
+**calculatePosition:** This method calculates the position of a satellite in three-dimensional space, given its orbital parameters and a time reference. The position is expressed in terms of either Cartesian coordinates (x, y, z) or spherical coordinates (longitude, latitude, altitude).
 
-It has methods to:
+**generateOrbitalElements:** This method generates a set of orbital elements for a satellite, including the semi-major axis, eccentricity, inclination, right ascension of the ascending node, argument of periapsis, and true anomaly. The orbital elements provide a complete description of the satellite's orbit.
 
-Solve the equations defining E iteratively
-Test precision over random inputs
-Get the eccentric anomaly for given M and e
-The solver is used by the KeplerLEOVelocity class to find E needed to determine the orbit position. It takes in M and e and returns the solved E.
-
-Overall, these classes allow calculating the position and motion of an orbiting body over time given its orbital parameters by solving Kepler's Equation. The output is the changing x,y,z coordinates as the body moves along its orbit.
-
+**updateOrbitalElements:** This method updates the orbital elements of a satellite based on new measurements of its position and velocity. This is important for tracking the satellite's orbit and predicting its future position.
 
 
 
