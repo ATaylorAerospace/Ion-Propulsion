@@ -34,4 +34,4 @@ The lib folder will contain the C++ libraries that will be used by the Python sc
 
 # Source
 
-This folder contains the C++ source code files for the propulsion system, thruster, nozzle, and fuels. The files are written in a clear and well-documented manner, and they follow the C++ standard. The files are organized into folders, and each folder contains a set of related files. The folders are named using a consistent and clear
+This folder contains the C++ source code files for the propulsion system, thruster, nozzle, and fuels. 
