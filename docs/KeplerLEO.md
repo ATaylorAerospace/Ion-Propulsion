@@ -1,4 +1,4 @@
-# Space-Propulsion
+# KeplerLeo
 Initial Space Propulsion Repository - Anfängliches Ionenantriebs-Repository
 This code implements a solver for Kepler's Equation to calculate the position and motion of an orbiting body over time.
 
