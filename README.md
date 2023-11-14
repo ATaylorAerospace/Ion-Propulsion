@@ -1,3 +1,6 @@
+![Geosat](doc/geosat.jpg)
+
+
 # Introduction
 
 This repository contains the design for an ion thruster that meets specific requirements for a GEO satellite. The design will focus on the following:
