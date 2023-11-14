@@ -1,4 +1,4 @@
-![Geosat](Ion-Propulsion/docs/geosat.png)
+![Geosat](docs/geosats.png)
 
 
 # Introduction
