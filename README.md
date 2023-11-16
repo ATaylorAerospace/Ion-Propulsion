@@ -29,13 +29,13 @@ This repository contains the design for a gridded ion thruster that meets specif
 
 The project will be completed in several phases. 
 
-The first phase will involve the design of the gridded ion thruster itself. This section will discuss the selection of the appropriate ion thruster geometry and the development of a detailed model of the gridded ion thruster. 
+**The first phase**will involve the design of the gridded ion thruster itself. This section will discuss the selection of the appropriate ion thruster geometry and the development of a detailed model of the gridded ion thruster. 
 
-The second phase will involve the design of the power supply for the gridden ion thruster. This section will discuss the selection of the appropriate power supply architecture and the development of a detailed model of the power supply.
+**The second phase** will involve the design of the power supply for the gridden ion thruster. This section will discuss the selection of the appropriate power supply architecture and the development of a detailed model of the power supply.
 
-The third phase will involve the design of the control system for the gridded ion thruster. This section will discuss the selection of the appropriate control system architecture and the development of a detailed model of the control system.
+**The third phase** will involve the design of the control system for the gridded ion thruster. This section will discuss the selection of the appropriate control system architecture and the development of a detailed model of the control system.
 
-## **Repository Structure**
+## 📖**📖Repository Structure**
 
 **docs**
 
