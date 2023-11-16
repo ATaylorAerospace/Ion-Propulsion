@@ -3,7 +3,7 @@
 
 # Introduction
 
-This repository contains the design for an ion thruster that meets specific requirements for Space probes and Geo satellites. The designs will focus on the following:
+This repository contains the design for a gridded ion thruster that meets specific requirements for Space probes and Geo satellites. The designs will focus on the following:
 
 **🚀High efficiency:** Strive for a specific impulse (Isp) of at least 3,000 seconds for Manuevering and Orbital Raising.
 
