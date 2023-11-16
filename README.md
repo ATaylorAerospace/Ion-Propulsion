@@ -1,7 +1,7 @@
 ![Geosat](docs/geosats.png)
 
 
-## **Introduction**
+# **Introduction**
 
 This repository contains the design for a gridded ion thruster that meets specific requirements for Space probes and Geo satellites. The designs will focus on the following:
 
@@ -25,7 +25,7 @@ This repository contains the design for a gridded ion thruster that meets specif
 
 **🚀Testability and maintainability:**  This component is essential for ensuring the engine's performance and readiness throughout the mission lifetime.
 
-## **Project Scope**
+# **Project Scope**
 
 The project will be completed in several phases. 
 
@@ -35,7 +35,7 @@ The project will be completed in several phases.
 
 **The third phase** will involve the design of the control system for the gridded ion thruster. This section will discuss the selection of the appropriate control system architecture and the development of a detailed model of the control system.
 
-## **Repository Structure**
+# **Repository Structure**
 
 ### **📖docs**
 
@@ -53,14 +53,14 @@ The python folder will contain the Python scripts that will be used to control t
 
 The tests folder will contain the tests that will be used to verify the functionality of the gridded ion thruster and the power supply. These tests will include both unit tests and integration tests. The tests will be written in Python and will call the C++ libraries to test the thruster and power supply. The tests will also perform GEO calculations to verify the specific impulse of the ion thruster.
 
-**📖lib**
+### **📖lib**
 
 The lib folder will contain the C++ libraries that will be used by the Python scripts in the python folder. These libraries will define the data types and function implementations that will be used by the Python code. The lib folder will contain the following libraries:
 
-- A C++ library that will be used to control the ion thruster. This library will be called by the Python scripts to control the ion thruster.
+- A C++ library that will be used to control the ion thruster. This library will be called by the Python scripts to control the gridded ion thruster.
 - A C++ library that will be used to control the power supply. This library will be called by the Python scripts to control the power supply.
 - A C++ library that will be used to communicate with the control system. This library will be called by the Python scripts to communicate with the control system.
 
-**📖src**
+### **📖src**
 
 This folder contains the C++ source code files for the propulsion system, thruster, nozzle, and fuels. 
