@@ -1,7 +1,7 @@
 ![Geosat](docs/geosats.png)
 
 
-## Introduction
+## **Introduction**
 
 This repository contains the design for a gridded ion thruster that meets specific requirements for Space probes and Geo satellites. The designs will focus on the following:
 
@@ -25,7 +25,7 @@ This repository contains the design for a gridded ion thruster that meets specif
 
 **🚀Testability and maintainability:**  This component is essential for ensuring the engine's performance and readiness throughout the mission lifetime.
 
-## Project Scope
+## **Project Scope**
 
 The project will be completed in several phases. 
 
@@ -35,9 +35,9 @@ The second phase will involve the design of the power supply for the gridden ion
 
 The third phase will involve the design of the control system for the gridded ion thruster. This section will discuss the selection of the appropriate control system architecture and the development of a detailed model of the control system.
 
-## Repository Structure
+## **Repository Structure**
 
-# **docs**
+**docs**
 
 The documentation for the project will be contained in the docs folder. This will include detailed designs of the gridded ion thruster, the power supply, and the control system. It will also include documentation of the thruster testing process and the results of the testing. This section will contain information about the overall design of the thruster, including a discussion of the research that went into the design and the trade-offs made during the design process.
 
