@@ -1,6 +1,6 @@
 ```cpp
-#ifndef THRUSTER_SPACE_THRUSTER_H
-#define THRUSTER_SPACE_THRUSTER_H
+#ifndef THRUSTER_SPACE_THRUSTER
+#define THRUSTER_SPACE_THRUSTER
 
 #include <iostream>
 #include "Thruster.hpp"
