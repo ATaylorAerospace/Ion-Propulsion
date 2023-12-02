@@ -7,7 +7,7 @@ This repository contains the design for a gridded ion thruster that meets specif
 
 **🚀High efficiency:** Strive for a specific impulse (Isp) of at least 3,000 seconds for Manuevering and Orbital Raising.
 
-**🚀Low propellant consumption:** To be achieved through various design optimizations, such as improving ion extraction efficiency and minimizing grid erosion.
+**🚀Low propellant consumption:** To be achieved through various design optimizations, such as improving ion extraction efficiencies and minimizing grid erosion.
 
 **🚀Long mission lifetime:** This requires careful selection of materials, extensive testing, and robust design principles.
 
