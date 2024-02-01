@@ -39,7 +39,7 @@ The project will be completed in several phases.
 
 ### **📖docs**
 
-The documentation for the project will be contained in the docs folder. This will include detailed designs of the gridded ion thruster, the power supply, and the control system. It will also include documentation of the thruster testing process and the results of the testing. This section will contain information about the overall design of the thruster, including a discussion of the research that went into the design and the trade-offs made during the design process.
+The documentation for the project will be contained in the docs folder. This will include detailed designs of the gridded ion thruster, the power supply, and the control system. It will also include documentation of the thruster testing process and the results of the thruster testing. This section will contain information about the overall design of the thruster, including a discussion of the research that went into the design and the trade-offs made during the design process.
 
 ### **📖include**
 
