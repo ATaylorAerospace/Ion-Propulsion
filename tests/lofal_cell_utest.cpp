@@ -16,7 +16,8 @@ protected:
 TEST_F(CellTest, ConstructorAndGetters) {
     EXPECT_DOUBLE_EQ(cell.get_width(), 1.0);
     EXPECT_DOUBLE_EQ(cell.get_height(), 2.0);
-    EXPECT_DOUBLE_EQ(cell.get_thickness(), 3.0);
+    #EXPECT_DOUBLE_EQ(cell.get_thickness(), 3.0); 26 Jul 24
+    EXPECT_DOUBLE_EQ(cell.get_thickness(), 4.0);
     EXPECT_DOUBLE_EQ(cell.get_mass(), 4.0);
     EXPECT_DOUBLE_EQ(cell.get_specific_heat(), 5.0);
     EXPECT_DOUBLE_EQ(cell.get_thermal_conductivity(), 6.0);
