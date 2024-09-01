@@ -36,8 +36,8 @@ class RFITPerformanceCalculator:
 if __name__ == "__main__":
     # Define specific parameters for the RF ion thruster.
     specific_impulse = 3000  # Specific impulse in seconds
-    thrust_power = 5000  # Thrust power in watts
-    efficiency = 0.85  # Efficiency of the ion thruster (85%)
+    thrust_power = 4000  # Thrust power in watts
+    efficiency = 0.75  # Efficiency of the ion thruster (85%)
 
     # Create an instance of the RFITPerformanceCalculator class.
     rfit_calculator = RFITPerformanceCalculator(specific_impulse, thrust_power, efficiency)
