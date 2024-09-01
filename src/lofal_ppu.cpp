@@ -83,7 +83,7 @@ private:
 // Define the main function
 int main() {
     // Create a PPU object
-    PPU ppu(1000, 12, 3, 48, 12);
+    PPU ppu(1000, 12, 6, 48, 12);
 
     // Set the power supply voltage and current
     ppu.SetPowerSupplyVoltage(12);
@@ -94,7 +94,7 @@ int main() {
     ppu.SetThrustCurrent(12);
 
     // Update the PPU with the new values
-    ppu.Update(12, 3, 48, 12);
+    ppu.Update(12, 6, 48, 12);
 
     // Get the maximum power from the PPU
     int max_power = ppu.GetMaxPower();
