@@ -1,63 +1,92 @@
-# Revised model for an ion thruster defining physical constants, thruster parameters, and propulsion equations. 
-# It calculates performance metrics like thrust, temperature, total energy, and mass flow rate.  
+# Revised model for an ion thruster defining physical constants, thruster parameters, and propulsion equations.
+# Calculates performance metrics like thrust, temperature, total energy, and mass flow rate.
 
-# ---- PHYSICAL CONSTANTS
-c = 299792458 # m s-1, speed of light
-b = 2.897771955e-3 # m K, Wien's displacement constant 
-h = 6.62607015e-34 # J Hz-1, Planck constant
-PI = 3.1415926535897932384626433 # regular everyday pi
-sigma = 5.670374419e-8 # W m-2 K-4, Stefan-Boltzmann constant
+# ---- PHYSICAL CONSTANTS ----
+C = 299792458  # m/s, speed of light
+WIEN_CONSTANT = 2.897771955e-3  # m·K, Wien's displacement constant
+PLANCK_CONSTANT = 6.62607015e-34  # J·Hz^-1, Planck constant
+PI = 3.141592653589793  # Pi
+STEFAN_BOLTZMANN_CONSTANT = 5.670374419e-8  # W·m^-2·K^-4
 
-# ---- DESIGN INPUTS
+# ---- DESIGN INPUTS ----
+A_RADIATOR = 10  # m², radiator area
+EMISSIVITY = 0.5
+THRUST_EFFICIENCY = 0.8  # Ion thruster efficiency
+SPECIFIC_IMPULSE = 3000  # s, ion thruster specific impulse
+GRAVITY = 9.81  # m/s², acceleration due to gravity
 
-# -- thruster
-A_radiator = 10 # m2, radiator area
-emissivity = 0.5 
-thrust_efficiency = 0.8 # ion thruster efficiency
-specific_impulse = 3000 # s, ion thruster specific impulse
-
-# ---- FORMULAE
+# ---- FUNCTIONS ----
 def get_thrust(efficiency, specific_impulse, power):
-  return 2 * efficiency * specific_impulse * power / (c * 9.81) 
+    """Calculate thrust (N)."""
+    return 2 * efficiency * specific_impulse * power / (C * GRAVITY)
 
+def get_radiance(temperature, area, emissivity=1):
+    """Calculate radiance (W)."""
+    return emissivity * STEFAN_BOLTZMANN_CONSTANT * area * temperature**4
 
-def get_radiance(T, A, epsilon=1):
-    return get_radiant_emmittance(T, epsilon) * A # W
+def get_temperature(power, area, emissivity=1):
+    """Calculate temperature (K) based on power radiated."""
+    return (power / (emissivity * STEFAN_BOLTZMANN_CONSTANT * area))**0.25
 
-def get_T(P, A, epsilon=1):
-    global sigma
-    return (P/(epsilon * sigma * A)) ** (0.25)
-
-
-def get_total_energy_output(m):
-    global c
-    return m * c**2 # J
+def get_total_energy_output(mass):
+    """Calculate total energy output (J)."""
+    return mass * C**2
 
 def get_ideal_delta_v(m_dry, m_fuel):
-    global c
-    m_i = m_dry + m_fuel
-    m_f = m_dry
-    numerator = c * ((m_i/m_f)**2 - 1)
-    denominator = (m_i/m_f)**2 + 1
-    return numerator / denominator
+    """Calculate ideal delta-v (m/s)."""
+    mass_initial = m_dry + m_fuel
+    mass_final = m_dry
+    ratio = mass_initial / mass_final
+    return C * (ratio**2 - 1) / (ratio**2 + 1)
 
-# ---- CALCULATIONS
-print("Calculating...")
-total_available_energy = get_total_energy_output(fissile_mass * conversion_ratio * e_reactor)
-run_time = total_available_energy / P_reactor # s
-mdot = fissile_mass / run_time # kg s-1
-P_propulsion = P_reactor * e_reactor
-thrust = 2 * P_propulsion / c # N
-T_thruster = get_T(P_propulsion, A_radiator, emissivity)
-avg_accel = delta_v / run_time
+# ---- CALCULATIONS ----
+def calculate_performance(fissile_mass, conversion_ratio, e_reactor, p_reactor, m_dry, m_fuel):
+    """Perform all calculations and return results as a dictionary."""
+    total_energy = get_total_energy_output(fissile_mass * conversion_ratio * e_reactor)
+    run_time = total_energy / p_reactor
+    mass_flow_rate = fissile_mass / run_time
+    propulsion_power = p_reactor * e_reactor
+    thrust = 2 * propulsion_power / C
+    thruster_temperature = get_temperature(propulsion_power, A_RADIATOR, EMISSIVITY)
+    delta_v = get_ideal_delta_v(m_dry, m_fuel)
+    avg_acceleration = delta_v / run_time
 
-# ---- OUTPUT
-print("Total available energy:", total_available_energy, "J =", total_available_energy/1e6, "MJ")
-print("Total emission time:", run_time, "s =", run_time / (60 * 60 * 24 * 365), "years")
-print("Noble gas consumption rate:", mdot, "kg/s =", mdot * 1e6 * 18 * 60, "mg/hour")
-print("Propulsion power:", P_propulsion, "W =", P_propulsion/1e6, "MW")
-print("Thrust:", thrust, "N")
-print("Thruster temperature:", T_thruster, "K =", T_thruster-273, "degrees C")
-print("Delta-v:", delta_v, "m/s =", delta_v/1e3, "km/s =", delta_v / c, "c")
-print("Ideal delta-v", delta_v_ideal, "m/s =", delta_v_ideal/1e3, "km/s =", delta_v_ideal / c, "c")
-print("Average acceleration:", avg_accel, "m/s per second =", avg_accel * 160 * 60 * 24 * 365/1e3, "km/s per year")
+    return {
+        "total_energy": total_energy,
+        "run_time": run_time,
+        "mass_flow_rate": mass_flow_rate,
+        "propulsion_power": propulsion_power,
+        "thrust": thrust,
+        "thruster_temperature": thruster_temperature,
+        "delta_v": delta_v,
+        "avg_acceleration": avg_acceleration
+    }
+
+# ---- OUTPUT ----
+def display_results(results):
+    """Print the results."""
+    print("Total available energy:", results["total_energy"], "J =", results["total_energy"] / 1e6, "MJ")
+    print("Total emission time:", results["run_time"], "s =", results["run_time"] / (60 * 60 * 24 * 365), "years")
+    print("Mass flow rate:", results["mass_flow_rate"], "kg/s =", results["mass_flow_rate"] * 1e6 * 18 * 60, "mg/hour")
+    print("Propulsion power:", results["propulsion_power"], "W =", results["propulsion_power"] / 1e6, "MW")
+    print("Thrust:", results["thrust"], "N")
+    print("Thruster temperature:", results["thruster_temperature"], "K =", results["thruster_temperature"] - 273, "°C")
+    print("Delta-v:", results["delta_v"], "m/s =", results["delta_v"] / 1e3, "km/s =", results["delta_v"] / C, "c")
+    print("Average acceleration:", results["avg_acceleration"], "m/s² =", results["avg_acceleration"] * 160 * 60 * 24 * 365 / 1e3, "km/s per year")
+
+# ---- EXAMPLE USAGE ----
+if __name__ == "__main__":
+    # Example input values
+    FISSILE_MASS = 1000  # kg
+    CONVERSION_RATIO = 0.2
+    E_REACTOR = 0.8
+    P_REACTOR = 1e6  # W
+    M_DRY = 10000  # kg
+    M_FUEL = 5000  # kg
+
+    # Perform calculations
+    results = calculate_performance(FISSILE_MASS, CONVERSION_RATIO, E_REACTOR, P_REACTOR, M_DRY, M_FUEL)
+
+    # Display results
+    display_results(results)
+
