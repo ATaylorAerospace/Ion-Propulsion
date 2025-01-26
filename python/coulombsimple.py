@@ -1,20 +1,30 @@
-# F is the magnitude of the force between the charges,
-# q1 and q2 are the amounts of charge,
-# r is the distance between the centers of the two charges,
-# k is Coulomb’s constant, approximately equal to 8.99×109N(m2/C2)
-
-import math
+# Coulomb's Law: Calculate the force between two charges
+# F = k * |q1 * q2| / r^2
 
 def calculate_coulomb_force(q1, q2, r):
-    k = 8.99e9
-    return k * abs(q1 * q2) / (r * r)
+    """Calculate the Coulomb force between two charges."""
+    k = 8.99e9  # Coulomb's constant in N·m²/C²
+    return k * abs(q1 * q2) / (r ** 2)
 
-q1 = float(input("Enter the first charge (in Coulombs): "))
-q2 = float(input("Enter the second charge (in Coulombs): "))
-r = float(input("Enter the distance between the charges (in meters): "))
+def main():
+    try:
+        # Input charges and distance
+        q1 = float(input("Enter the first charge (in Coulombs): "))
+        q2 = float(input("Enter the second charge (in Coulombs): "))
+        r = float(input("Enter the distance between the charges (in meters): "))
 
-force = calculate_coulomb_force(q1, q2, r)
+        if r <= 0:
+            raise ValueError("Distance must be greater than zero.")
 
-print("The Coulomb force between the charges is: ", force, "N")
+        # Calculate and display the force
+        force = calculate_coulomb_force(q1, q2, r)
+        print(f"The Coulomb force between the charges is: {force:.2e} N")
+
+    except ValueError as e:
+        print(f"Invalid input: {e}")
+
+if __name__ == "__main__":
+    main()
+
 
 
