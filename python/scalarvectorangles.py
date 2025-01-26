@@ -1,5 +1,4 @@
 import numpy as np
-from math import acos
 from typing import Tuple
 
 class LineOfSight:
@@ -26,19 +25,22 @@ def calculate_phase_angle(los: LineOfSight, positions: np.ndarray) -> np.ndarray
     """
 
     los_vector = np.asarray(los.los)
+    los_norm = np.linalg.norm(los_vector)
     
+    # Normalize the line of sight vector
+    los_unit = los_vector / los_norm
+
     if positions.ndim == 1:
         # Single position
-        return acos(np.dot(-positions, -los_vector) /
-                    np.linalg.norm(positions))
-    
+        positions_norm = np.linalg.norm(positions)
+        pos_unit = positions / positions_norm
+        return np.arccos(np.clip(-np.dot(pos_unit, los_unit), -1.0, 1.0))
+
     # Multiple positions
-    result = np.empty(len(positions))
-    for i, pos in enumerate(positions):
-        result[i] = acos(np.dot(-pos, -los_vector) / 
-                         np.linalg.norm(pos))
-        
-    return result
+    positions_norms = np.linalg.norm(positions, axis=1, keepdims=True)
+    positions_unit = positions / positions_norms
+    dot_products = -np.dot(positions_unit, los_unit)
+    return np.arccos(np.clip(dot_products, -1.0, 1.0))
 
 def main(los: LineOfSight, positions: Tuple[float, np.ndarray]) -> np.ndarray:
     pos_array = np.asarray(positions)
@@ -47,3 +49,4 @@ def main(los: LineOfSight, positions: Tuple[float, np.ndarray]) -> np.ndarray:
     print(f"Phase angles: {angles}")
     
     return angles
+
