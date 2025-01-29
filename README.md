@@ -60,3 +60,17 @@ The lib folder will contain the C++ libraries that will be used by the Python sc
 ### **📖src**
 
 This folder contains the C++ source code files for the propulsion system, thruster, nozzle, and fuels. 
+
+## Citation 📖**
+
+If you use this repository in your research, please cite it as:
+
+```bibtex
+@misc{ATaylor_IonPropulsion_2025,
+  author       = {A. Taylor},
+  title        = {Ion Propulsion},
+  year         = {2025},
+  url          = {[https://github.com/ATaylorAerospace/Ion-Propulsion/]},
+  note         = {Accessed: YYYY-MM-DD}
+}
+
