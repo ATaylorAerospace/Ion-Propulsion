@@ -9,7 +9,7 @@ class InletGenerator {
 public:
     // Constants for inlet parameters
     static constexpr double MAX_THROTTLE = 1000.0;
-    static constexpr double MIN_THROTTLE = 10.0;
+    static constexpr double MIN_THROTTLE = 10.5;
     static constexpr double MAX_VELOCITY = 100.0;
     static constexpr double MIN_VELOCITY = 5.0;
 
