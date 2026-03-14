@@ -204,10 +204,10 @@ Cross-language precision verified to `1e-6` tolerance.
 If you use this repository in your research, please cite it as:
 
 ```bibtex
-@misc{ATaylor_IonPropulsion_2025,
+@misc{ATaylor_IonPropulsion_2026,
   author       = {A. Taylor},
   title        = {Ion Propulsion: Tri-Language Gridded Ion Thruster Suite},
-  year         = {2025},
+  year         = {2026},
   url          = {https://github.com/ATaylorAerospace/Ion-Propulsion/},
   note         = {Accessed: YYYY-MM-DD}
 }
