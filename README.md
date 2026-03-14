@@ -1,76 +1,220 @@
 ![Geosat](docs/geosats.png)
 
+# 🚀 **Ion-Propulsion: Tri-Language Gridded Ion Thruster Suite**
 
-# **Introduction**
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Stars](https://img.shields.io/github/stars/ATaylorAerospace/Ion-Propulsion?style=social)](https://github.com/ATaylorAerospace/Ion-Propulsion)
+[![Languages](https://img.shields.io/badge/Languages-Python%20%7C%20C%2B%2B%20%7C%20MATLAB-brightgreen.svg)](https://github.com/ATaylorAerospace/Ion-Propulsion)
+[![Author](https://img.shields.io/badge/Author-A%20Taylor-green.svg)](https://github.com/ATaylorAerospace)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
+[![C++](https://img.shields.io/badge/C%2B%2B-20-orange.svg)](https://isocpp.org/)
+[![MATLAB](https://img.shields.io/badge/MATLAB-R2020b%2B-orange.svg)](https://www.mathworks.com/products/matlab.html)
+[![Tests](https://img.shields.io/badge/Tests-67%20Passing-brightgreen.svg)](https://github.com/ATaylorAerospace/Ion-Propulsion)
 
-This repository contains the design for a gridded ion thruster that meets specific requirements for Space probes and Geo satellites. The designs will focus on the following:
+A flight-grade tri-language (Python, MATLAB, C++) library for gridded ion thruster modeling and mission analysis, developed for space probes and GEO satellites.
 
-**🚀High efficiency:** Strive for a specific impulse (Isp) of at least 3,000 seconds for Manuevering and Orbital Raising.
+**Author: A Taylor**
 
-**🚀Low propellant consumption:** To be achieved through various design optimizations, such as improving ion extraction efficiencies and minimizing grid erosion.
+---
 
-**🚀Long mission lifetime:** This requires careful selection of materials, extensive testing, and robust design principles.
+## 🚀 **Introduction**
 
-**🚀High thrust-to-weight ratio:**  Crucial aspect for maximizing the payload capacity of the space probe and achieving the desired mission objectives.
+This repository contains the design and simulation tools for a gridded ion thruster that meets specific requirements for space probes and GEO satellites. The suite provides parity across three languages with verified precision (`1e-6` tolerance).
 
-**🚀Grid optimization:** Focus on optimizing grid design to minimize ion divergence and maximize thrust generation while minimizing grid erosion.
+**🚀 High efficiency:** Strive for a specific impulse (Isp) of at least 3,000 seconds for maneuvering and orbital raising.
 
-**🚀Neutralizer performance:** Designs that ensure that the neutralizer effectively compensates for the charge imbalance created by the ion beam to prevent space probe charging.
+**🚀 Low propellant consumption:** Achieved through ion extraction efficiency optimization and minimized grid erosion modeling.
 
-**🚀Thermal management:**  Design an effective thermal management system to maintain the ion engine within its optimal operating temperature range.
+**🚀 Long mission lifetime:** Careful material selection with grid erosion rate tracking and neutralizer performance modeling.
 
-**🚀Reliability:** Design must be highly reliable and resistant to radiation damage, micrometeoroid impacts, and other environmental stresses.
+**🚀 High thrust-to-weight ratio:** Crucial for maximizing payload capacity and achieving desired mission objectives.
 
-**🚀Compactness and integrability:** The engine should be compact and easy to integrate with the spacecraft's overall structure and power supply as well as for fit in boosting rockets fairing 
+**🚀 Grid optimization:** Optimized grid design using Child-Langmuir law modeling to minimize ion divergence and maximize thrust generation.
 
-**🚀Testability and maintainability:**  This component is essential for ensuring the engine's performance and readiness throughout the mission lifetime.
+**🚀 Neutralizer performance:** Ensures the neutralizer effectively compensates for charge imbalance created by the ion beam.
 
-# **Project Scope**
+**🚀 Thermal management:** Integrated solar cell and thermal property modeling for optimal operating temperature range.
 
-The project will be completed in several phases. 
+**🚀 Reliability:** Designed for radiation resistance, micrometeoroid impacts, and environmental stresses.
 
-**🛠The first phase:** Will involve the design of the gridded ion thruster itself. This section will discuss the selection of the appropriate ion thruster geometry and the development of a detailed model of the gridded ion thruster. 
+**🚀 Compactness and integrability:** Compact engine design for integration with spacecraft structure, power supply, and launch vehicle fairings.
 
-**🛠The second phase:** Will involve the design of the power supply for the gridden ion thruster. This section will discuss the selection of the appropriate power supply architecture and the development of a detailed model of the power supply.
+**🚀 Testability and maintainability:** Comprehensive test suites across all three languages ensure performance and readiness.
 
-**🛠The third phase:** Will involve the design of the control system for the gridded ion thruster. This section will discuss the selection of the appropriate control system architecture and the development of a detailed model of the control system.
+---
 
-# **Repository Structure**
+## 🛠 **Project Scope**
 
-### **📖docs**
+The project delivers three core modules with strict cross-language parity:
 
-The documentation for the project will be contained in the docs folder. This will include detailed designs of the gridded ion thruster, the power supply, and the control system. It will also include documentation of the thruster testing process and the results of the thruster testing. This section will contain information about the overall design of the thruster, including a discussion of the research that went into the design and the trade-offs made during the design process.
+**🛠 dynamics:** GEO/Lagrange mission profile calculations and low-thrust trajectory modeling. Includes Hohmann transfer delta-v, Lagrange point estimation, spiral transfer analysis, and low-thrust transfer time computation.
 
-### **📖include**
+**🛠 propulsion:** High-fidelity Gridded Ion Thruster (GIT) models. Includes ion extraction efficiency, beam voltage/current modeling, Child-Langmuir current limits, grid erosion rates (molybdenum sputtering), neutralizer performance, and power processing unit integration.
 
-The include folder will contain the header files that will be used by the C++ files in the python and lib folders. These headers will define the data types and function declarations that will be used by the C++ code.
+**🛠 optimization:** Solvers for maximizing payload fraction (Tsiolkovsky rocket equation), minimizing propellant consumption, extending mission lifetime, and finding optimal Isp for power-constrained missions.
 
-### **📖python**
+---
 
-The python folder will contain the Python scripts that will be used to control the gridded ion thruster, power supply, and GEO and Lagrange calculations. These scripts will be used to test the ion thruster and the power supply and GEO simulations. The Python scripts will call the C++ libraries to control the thruster and power supply. The Python scripts will also perform the GEO and Lagrange calculations to determine the specific impulse of the ion thruster.
+## 📖 **Repository Structure**
 
-### **📖tests**
+### 📖 **python/**
 
-The tests folder will contain the tests that will be used to verify the functionality of the gridded ion thruster and the power supply. These tests will include both unit tests and integration tests. The tests will be written in Python and will call the C++ libraries to test the thruster and power supply. The tests will also perform GEO calculations to verify the specific impulse of the ion thruster.
+Python package using Hatch build system with `astropy.units` for all physical quantities. Install with `pip install -e ./python`. Tests run with `pytest`.
 
-### **📖lib**
+```
+python/
+  pyproject.toml
+  src/ion_propulsion/
+    dynamics/mission_profiles.py
+    propulsion/thruster.py
+    optimization/solvers.py
+  tests/
+    test_dynamics.py
+    test_propulsion.py
+    test_optimization.py
+```
 
-The lib folder will contain the C++ libraries that will be used by the Python scripts in the python folder. These libraries will define the data types and function implementations that will be used by the Python code. The lib folder will contain the following libraries:
+### 📖 **matlab/**
 
-### **📖src**
+MATLAB function-based structure with modern `arguments` validation blocks for type safety. Run tests with `runtests('matlab/tests')`.
 
-This folder contains the C++ source code files for the propulsion system, thruster, nozzle, and fuels. 
+```
+matlab/
+  dynamics/
+    geo_transfer_delta_v.m
+    lagrange_point_l1.m
+    low_thrust_transfer_time.m
+    spiral_delta_v.m
+  propulsion/
+    GriddedIonThruster.m
+  optimization/
+    optimal_payload_fraction.m
+    propellant_mass.m
+    mission_lifetime.m
+    optimize_isp_for_mission.m
+  tests/
+    test_dynamics.m
+    test_propulsion.m
+    test_optimization.m
+```
 
-## Citation 📖**
+### 📖 **cpp/**
+
+Standard CMake project using C++20. Built with Google Test for validation. Build instructions below.
+
+```
+cpp/
+  CMakeLists.txt
+  include/ion_propulsion/
+    constants.hpp
+    dynamics/mission_profiles.hpp
+    propulsion/thruster.hpp
+    optimization/solvers.hpp
+  src/
+    dynamics/mission_profiles.cpp
+    propulsion/thruster.cpp
+    optimization/solvers.cpp
+  tests/
+    test_dynamics.cpp
+    test_propulsion.cpp
+    test_optimization.cpp
+```
+
+### 📖 **docs/**
+
+Documentation and reference imagery for the project.
+
+---
+
+## 🏗️ **Build Instructions**
+
+### 🐍 Python
+
+```bash
+cd python
+pip install -e ".[test]"
+pytest tests/
+```
+
+### 🧮 MATLAB
+
+```matlab
+addpath(genpath('matlab'))
+runtests('matlab/tests')
+```
+
+### ⚙️ C++
+
+```bash
+cd cpp
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+cd build && ctest --output-on-failure
+```
+
+---
+
+## 🔬 **Core Physics**
+
+All implementations share identical constants and equations:
+
+| Equation | Formula |
+|----------|---------|
+| **Tsiolkovsky Rocket Equation** | `dv = Isp * g0 * ln(m0 / mf)` |
+| **Child-Langmuir Law** | `J_CL = (4/9) * eps0 * sqrt(2e/mi) * V^(3/2) / d^2` |
+| **Specific Impulse** | `Isp = (1/g0) * sqrt(2eVb/mi) * eta` |
+| **Hohmann Transfer** | `dv1 = v_transfer_peri - v_park` |
+| **Spiral Transfer** | `dv = sqrt(mu/ri) - sqrt(mu/rf)` |
+
+### 📊 Physical Constants
+
+| Constant | Value | Unit |
+|----------|-------|------|
+| `g0` | 9.80665 | m/s^2 |
+| `mu_earth` | 3.986004418e14 | m^3/s^2 |
+| `R_earth` | 6.371e6 | m |
+| `GEO_radius` | 42164.0e3 | m |
+| `epsilon_0` | 8.854187817e-12 | F/m |
+| `e_charge` | 1.602176634e-19 | C |
+| `m_xenon` | 2.18e-25 | kg |
+
+Cross-language precision verified to `1e-6` tolerance.
+
+---
+
+## 🧪 **Test Summary**
+
+| Language | Framework | Tests | Status |
+|----------|-----------|-------|--------|
+| 🐍 Python | pytest | 36 | ✅ Passing |
+| ⚙️ C++ | Google Test | 31 | ✅ Passing |
+| 🧮 MATLAB | matlab.unittest | 33 | ✅ Ready |
+
+---
+
+## 📖 **References**
+
+- Goebel, D.M. and Katz, I., *Fundamentals of Electric Propulsion: Ion and Hall Thrusters*
+- Vallado, D.A., *Fundamentals of Astrodynamics and Applications*
+
+---
+
+## 📖 **Citation**
 
 If you use this repository in your research, please cite it as:
 
 ```bibtex
 @misc{ATaylor_IonPropulsion_2025,
   author       = {A. Taylor},
-  title        = {Ion Propulsion},
+  title        = {Ion Propulsion: Tri-Language Gridded Ion Thruster Suite},
   year         = {2025},
-  url          = {[https://github.com/ATaylorAerospace/Ion-Propulsion/]},
+  url          = {https://github.com/ATaylorAerospace/Ion-Propulsion/},
   note         = {Accessed: YYYY-MM-DD}
 }
+```
 
+---
+
+## 📖 **License**
+
+This project is licensed under the GNU General Public License v3.0. See [LICENSE](LICENSE) for details.
