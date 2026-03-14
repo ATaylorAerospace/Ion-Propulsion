@@ -2,7 +2,7 @@
 
 # 🚀 **Ion-Propulsion: Tri-Language Gridded Ion Thruster Suite**
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Stars](https://img.shields.io/github/stars/ATaylorAerospace/Ion-Propulsion?style=social)](https://github.com/ATaylorAerospace/Ion-Propulsion)
 [![Languages](https://img.shields.io/badge/Languages-Python%20%7C%20C%2B%2B%20%7C%20MATLAB-brightgreen.svg)](https://github.com/ATaylorAerospace/Ion-Propulsion)
 [![Author](https://img.shields.io/badge/Author-A%20Taylor-green.svg)](https://github.com/ATaylorAerospace)
@@ -217,4 +217,4 @@ If you use this repository in your research, please cite it as:
 
 ## 📖 **License**
 
-This project is licensed under the GNU General Public License v3.0. See [LICENSE](LICENSE) for details.
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.

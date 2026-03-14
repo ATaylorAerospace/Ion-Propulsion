@@ -7,6 +7,7 @@ name = "ion-propulsion"
 version = "1.0.0"
 description = "Flight-grade gridded ion thruster modeling and mission analysis"
 authors = [{name = "A Taylor"}]
+license = {text = "MIT"}
 requires-python = ">=3.10"
 dependencies = ["numpy>=1.24", "astropy>=5.0", "scipy>=1.10"]
 
