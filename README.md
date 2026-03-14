@@ -11,7 +11,7 @@
 [![MATLAB](https://img.shields.io/badge/MATLAB-R2020b%2B-orange.svg)](https://www.mathworks.com/products/matlab.html)
 [![Tests](https://img.shields.io/badge/Tests-67%20Passing-brightgreen.svg)](https://github.com/ATaylorAerospace/Ion-Propulsion)
 
-A flight-grade tri-language (Python, MATLAB, C++) library for gridded ion thruster modeling and mission analysis, developed for space probes and GEO satellites.
+A flight grade tri language (Python, MATLAB, C++) library for gridded ion thruster modeling and mission analysis, developed for space probes and GEO satellites.
 
 **Author: A Taylor**
 
