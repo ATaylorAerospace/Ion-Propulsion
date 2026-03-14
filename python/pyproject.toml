@@ -1,0 +1,17 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ion-propulsion"
+version = "1.0.0"
+description = "Flight-grade gridded ion thruster modeling and mission analysis"
+authors = [{name = "A Taylor"}]
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "astropy>=5.0", "scipy>=1.10"]
+
+[project.optional-dependencies]
+test = ["pytest>=7.0", "pytest-cov"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ion_propulsion"]
