@@ -1,6 +1,6 @@
 ![Geosat](docs/geosats.png)
 
-# 🚀 **Ion-Propulsion: Tri-Language Gridded Ion Thruster Suite**
+# 🚀 **Ion-Propulsion: Gridded Ion Thruster Suite**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Stars](https://img.shields.io/github/stars/ATaylorAerospace/Ion-Propulsion?style=social)](https://github.com/ATaylorAerospace/Ion-Propulsion)
@@ -45,9 +45,9 @@ This repository contains the design and simulation tools for a gridded ion thrus
 
 ## 🛠 **Project Scope**
 
-The project delivers three core modules with strict cross-language parity:
+The project delivers three core modules with strict cross language parity:
 
-**🛠 dynamics:** GEO/Lagrange mission profile calculations and low-thrust trajectory modeling. Includes Hohmann transfer delta-v, Lagrange point estimation, spiral transfer analysis, and low-thrust transfer time computation.
+**🛠 dynamics:** GEO/Lagrange mission profile calculations and low thrust trajectory modeling. Includes Hohmann transfer delta-v, Lagrange point estimation, spiral transfer analysis, and low thrust transfer time computation.
 
 **🛠 propulsion:** High-fidelity Gridded Ion Thruster (GIT) models. Includes ion extraction efficiency, beam voltage/current modeling, Child-Langmuir current limits, grid erosion rates (molybdenum sputtering), neutralizer performance, and power processing unit integration.
 
