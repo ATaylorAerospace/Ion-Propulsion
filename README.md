@@ -14,6 +14,8 @@ A flight grade tri language (Python, MATLAB, C++) library for gridded ion thrust
 
 **Author: A Taylor**
 
+[![Contact A Taylor](https://img.shields.io/badge/Contact-A%20Taylor-brightgreen?logo=mail.ru&logoColor=white)](https://ataylor.getform.com/5w8wz)
+
 ---
 
 ## 🚀 **Introduction**
@@ -211,6 +213,12 @@ If you use this repository in your research, please cite it as:
   note         = {Accessed: YYYY-MM-DD}
 }
 ```
+
+---
+
+## 📖 **Contact**
+
+[![Contact A Taylor](https://img.shields.io/badge/Contact-A%20Taylor-brightgreen?logo=mail.ru&logoColor=white)](https://ataylor.getform.com/5w8wz)
 
 ---
 
