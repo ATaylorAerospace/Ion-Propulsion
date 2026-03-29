@@ -10,8 +10,7 @@ classdef test_dynamics < matlab.unittest.TestCase
         function test_geo_transfer_total_delta_v(testCase)
         % Verify combined Hohmann delta-v from 200 km parking orbit to GEO
         % is approximately 4.93 km/s (Vallado reference value).
-            R_earth = 6.371e6;  % m
-            r_park_km = (R_earth + 200e3) / 1e3;  % ~6571 km
+            r_park_km = 200;  % altitude in km (consistent with Python/C++)
             [dv1, dv2] = geo_transfer_delta_v(r_park_km);
             total_dv = dv1 + dv2;
             testCase.verifyEqual(total_dv, 4.93, 'AbsTol', 0.1, ...
@@ -20,8 +19,7 @@ classdef test_dynamics < matlab.unittest.TestCase
 
         function test_geo_transfer_individual_burns(testCase)
         % Verify that both burns are positive.
-            R_earth = 6.371e6;
-            r_park_km = (R_earth + 200e3) / 1e3;
+            r_park_km = 200;  % altitude in km (consistent with Python/C++)
             [dv1, dv2] = geo_transfer_delta_v(r_park_km);
             testCase.verifyGreaterThan(dv1, 0, 'First burn must be positive');
             testCase.verifyGreaterThan(dv2, 0, 'Second burn must be positive');
@@ -29,8 +27,7 @@ classdef test_dynamics < matlab.unittest.TestCase
 
         function test_geo_transfer_first_burn_larger(testCase)
         % For LEO to GEO, the perigee burn is larger than the apogee burn.
-            R_earth = 6.371e6;
-            r_park_km = (R_earth + 200e3) / 1e3;
+            r_park_km = 200;  % altitude in km (consistent with Python/C++)
             [dv1, dv2] = geo_transfer_delta_v(r_park_km);
             testCase.verifyGreaterThan(dv1, dv2, ...
                 'Perigee burn should exceed apogee burn for LEO-GEO');
