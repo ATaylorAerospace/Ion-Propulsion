@@ -58,6 +58,17 @@ class GriddedIonThruster:
         screen_aperture_radius_m: float = 1.0e-3,
         discharge_loss_WperA: float = 200.0,
     ):
+        if beam_voltage_V <= 0:
+            raise ValueError("Beam voltage must be positive")
+        if beam_current_A <= 0:
+            raise ValueError("Beam current must be positive")
+        if mass_flow_rate_kgs <= 0:
+            raise ValueError("Mass flow rate must be positive")
+        if grid_spacing_m <= 0:
+            raise ValueError("Grid spacing must be positive")
+        if propellant_mass_kg <= 0:
+            raise ValueError("Propellant mass must be positive")
+
         self.beam_voltage_V = beam_voltage_V
         self.beam_current_A = beam_current_A
         self.screen_grid_voltage_V = screen_grid_voltage_V
