@@ -7,7 +7,7 @@
  * @brief Fundamental physical constants used throughout the ion propulsion library.
  *
  * All constants are defined as \c constexpr values for compile-time evaluation.
- * Values are consistent across C++, Python, and Rust implementations.
+ * Values are consistent across C++, Python, and MATLAB implementations.
  */
 
 namespace ion_propulsion::constants {
