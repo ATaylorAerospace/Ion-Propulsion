@@ -144,10 +144,9 @@ classdef GriddedIonThruster
         %   $$J_{CL} = \frac{4}{9}\,\varepsilon_0\,\sqrt{\frac{2\,e}{m_{ion}}}
         %              \,\frac{V_{total}^{3/2}}{d^2}$$
         %
-        %   where $V_{total} = V_{beam} - V_{accel}$ (note: V_accel is
-        %   typically negative, so V_total > V_beam).
+        %   where $V_{total} = V_{screen} + |V_{accel}|$.
 
-            V_total = obj.beam_voltage - obj.accel_grid_voltage;
+            V_total = obj.screen_grid_voltage + abs(obj.accel_grid_voltage);
             J_CL = (4.0 / 9.0) * obj.epsilon_0 * ...
                     sqrt(2.0 * obj.e_charge / obj.propellant_mass) * ...
                     V_total^(3.0/2.0) / obj.grid_spacing^2;
