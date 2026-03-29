@@ -60,7 +60,7 @@ The project delivers three core modules with strict cross language parity:
 
 ### 📖 **python/**
 
-Python package using Hatch build system with `astropy.units` for all physical quantities. Install with `pip install -e ./python`. Tests run with `pytest`.
+Python package using Hatch build system with `astropy.units` for all physical quantities. Constructor input validation mirrors the C++ and MATLAB implementations for cross-language safety parity. Install with `pip install -e ./python`. Tests run with `pytest`.
 
 ```
 python/
@@ -183,6 +183,20 @@ Cross-language precision verified to `1e-6` tolerance.
 
 ---
 
+## 🔧 **API Conventions**
+
+All three language implementations enforce the same API contracts. Key conventions to note when calling functions across languages:
+
+**🔧 `geo_transfer_delta_v(r_park_km)`** — The `r_park_km` parameter is the parking orbit **altitude above Earth's surface** in kilometres (not the full orbital radius). The function adds `R_earth` internally. For example, pass `200.0` for a 200 km LEO parking orbit.
+
+**🔧 `child_langmuir_current()`** — Computes space-charge-limited current density using `V_total = V_screen + |V_accel|`. The accelerator grid voltage is treated as a positive magnitude in the formula regardless of the sign convention used at construction time.
+
+**🔧 Input Validation** — All three languages validate constructor and function inputs. Beam voltage, beam current, mass flow rate, grid spacing, and propellant mass must all be positive. Python raises `ValueError`, C++ raises `std::invalid_argument`, and MATLAB uses `arguments` blocks with `{mustBePositive}`.
+
+**🔧 `optimize_isp_for_mission()`** — The optimizer is power-constrained: thrust is computed as `F = 2·η·P / (Isp·g₀)` and the solver searches for the Isp that maximises the resulting payload fraction. Both the `power_W` and `eta` parameters are active in the objective function across all three implementations.
+
+---
+
 ## 🧪 **Test Summary**
 
 | Language | Framework | Tests | Status |
@@ -190,6 +204,46 @@ Cross-language precision verified to `1e-6` tolerance.
 | 🐍 Python | pytest | 36 | ✅ Passing |
 | ⚙️ C++ | Google Test | 31 | ✅ Passing |
 | 🧮 MATLAB | matlab.unittest | 33 | ✅ Ready |
+
+---
+
+## 🤝 **Contributing**
+
+Contributions are welcome. When submitting changes, please observe these project standards:
+
+**🤝 Cross-language parity:** Any physics function added or modified in one language must be reflected in all three (Python, C++, MATLAB) with identical constants, formulas, and API conventions. Verify results match to `1e-6` tolerance.
+
+**🤝 Input validation:** All constructors and functions that accept physical parameters must validate inputs. Beam voltages, currents, masses, and distances must be positive. Follow the existing pattern: Python uses `ValueError`, C++ uses `std::invalid_argument`, MATLAB uses `arguments` blocks.
+
+**🤝 Unit safety:** Python functions must return `astropy.units.Quantity` objects. C++ and MATLAB functions document units in docstrings and header comments.
+
+**🤝 Build artifacts:** The repository includes a `.gitignore` for Python (`__pycache__`, `*.egg-info`, `.pytest_cache`), C++ (`build/`, `*.o`, `*.so`), and MATLAB (`*.mexa64`, `*.asv`) artifacts. Do not commit generated files.
+
+**🤝 Tests:** Every new function requires unit tests in all three languages. Run the full test suite before submitting.
+
+---
+
+## 📋 **Changelog**
+
+### v1.1.0 — 2026
+
+**🔴 Bug Fixes**
+
+- **`optimize_isp_for_mission` (Python):** Wired `power_W` and `eta` into the objective function. Previously these parameters were accepted but unused, causing the optimizer to return pure Tsiolkovsky fractions instead of power-constrained results. Now matches the C++ implementation.
+- **`child_langmuir_current` (MATLAB):** Corrected voltage variable from `beam_voltage` to `screen_grid_voltage + |accel_grid_voltage|`, restoring cross-language parity with the Python and C++ implementations.
+
+**🟡 API Alignment**
+
+- **`geo_transfer_delta_v` (MATLAB):** Aligned input convention to take parking orbit **altitude above Earth's surface** (km), matching Python and C++. Previously took the full orbital radius (km). MATLAB test updated accordingly.
+
+**🟡 Robustness**
+
+- **`GriddedIonThruster` constructor (Python):** Added input validation for beam voltage, beam current, mass flow rate, grid spacing, and propellant mass. Raises `ValueError` on non-positive values, matching the guards in C++ (`std::invalid_argument`) and MATLAB (`{mustBePositive}`).
+
+**🟢 Housekeeping**
+
+- **`constants.hpp` (C++):** Fixed documentation comment referencing "Rust" — corrected to "MATLAB".
+- **`.gitignore`:** Added repository-wide `.gitignore` covering Python, C++, MATLAB, and IDE artifacts.
 
 ---
 
@@ -225,3 +279,4 @@ If you use this repository in your research, please cite it as:
 ## 📖 **License**
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+
