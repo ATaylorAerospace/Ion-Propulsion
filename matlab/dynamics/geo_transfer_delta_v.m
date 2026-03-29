@@ -5,19 +5,11 @@ function [delta_v1, delta_v2] = geo_transfer_delta_v(r_park_km)
 %   [delta_v1, delta_v2] = geo_transfer_delta_v(r_park_km)
 %
 %   Computes the two impulsive burns for a Hohmann transfer from a circular
-%   parking orbit of radius r_park_km (km) to geosynchronous orbit.
-%
-%   The Hohmann transfer ellipse has semi-major axis:
-%
-%   $$a_{transfer} = \frac{r_{park} + r_{GEO}}{2}$$
-%
-%   The perigee and apogee velocities on the transfer ellipse are:
-%
-%   $$v_{t,peri} = \sqrt{\mu \left(\frac{2}{r_{park}} - \frac{1}{a_{transfer}}\right)}$$
-%   $$v_{t,apo}  = \sqrt{\mu \left(\frac{2}{r_{GEO}}  - \frac{1}{a_{transfer}}\right)}$$
+%   parking orbit at altitude r_park_km (km above Earth's surface) to
+%   geosynchronous orbit.
 %
 %   Inputs:
-%       r_park_km - Parking orbit radius in km (scalar, positive)
+%       r_park_km - Parking orbit altitude above Earth's surface in km
 %
 %   Outputs:
 %       delta_v1  - First burn delta-v at perigee (km/s)
@@ -29,10 +21,11 @@ function [delta_v1, delta_v2] = geo_transfer_delta_v(r_park_km)
 
     % Constants
     mu_earth = 3.986004418e14;   % m^3/s^2
-    GEO_radius = 42164.0e3;     % m
+    R_earth  = 6.371e6;          % m
+    GEO_radius = 42164.0e3;      % m
 
-    % Convert parking orbit radius to meters
-    r_park = r_park_km * 1.0e3;
+    % Convert parking altitude (km) to orbital radius (m)
+    r_park = R_earth + r_park_km * 1.0e3;
     r_geo  = GEO_radius;
 
     % Circular orbit velocities
