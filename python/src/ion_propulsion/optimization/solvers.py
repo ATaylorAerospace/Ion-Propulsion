@@ -129,7 +129,13 @@ def optimize_isp_for_mission(
         """Negative payload fraction (for minimisation)."""
         if Isp_s <= 0:
             return 0.0
-        m_prop = total_mass_kg * (1.0 - np.exp(-delta_v_ms / (Isp_s * G0)))
+        ve = Isp_s * G0
+        pf = np.exp(-delta_v_ms / ve)
+        m_prop = total_mass_kg * (1.0 - pf)
+        thrust = 2.0 * eta * power_W / ve
+        m_dot = thrust / ve
+        if m_dot <= 0 or m_prop <= 0:
+            return 0.0
         fraction = 1.0 - m_prop / total_mass_kg
         return -fraction
 
