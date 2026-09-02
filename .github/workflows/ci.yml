@@ -1,0 +1,62 @@
+# Author: A Taylor | Purpose: Continuous integration for the Python, C++, and MATLAB suites | Ref: Goebel/Katz/Vallado
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    name: Python ${{ matrix.python-version }} (pytest)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install package with test extras
+        run: python -m pip install --upgrade pip && python -m pip install -e "./python[test]"
+      - name: Run pytest
+        run: python -m pytest python/tests -v
+
+  cpp:
+    name: C++20 (CMake + Google Test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure
+        run: cmake -S cpp -B cpp/build -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build cpp/build --parallel
+      - name: Test
+        run: ctest --test-dir cpp/build --output-on-failure
+
+  matlab:
+    name: MATLAB (matlab.unittest)
+    runs-on: ubuntu-latest
+    # MathWorks provides hosted licensing for public repositories on GitHub-hosted
+    # runners. The job is advisory so that a licensing outage cannot block a PR;
+    # results are still visible in the workflow log.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: matlab-actions/setup-matlab@v2
+        with:
+          release: R2023b
+      - uses: matlab-actions/run-command@v2
+        with:
+          command: >
+            addpath(genpath('matlab'));
+            results = runtests('matlab/tests');
+            disp(table(results));
+            assertSuccess(results);

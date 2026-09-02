@@ -4,15 +4,34 @@ build-backend = "hatchling.build"
 
 [project]
 name = "ion-propulsion"
-version = "1.0.0"
+version = "1.2.0"
 description = "Flight-grade gridded ion thruster modeling and mission analysis"
+readme = "../README.md"
 authors = [{name = "A Taylor"}]
 license = {text = "MIT"}
 requires-python = ">=3.10"
-dependencies = ["numpy>=1.24", "astropy>=5.0", "scipy>=1.10"]
+dependencies = ["numpy>=1.24", "astropy>=5.0"]
+keywords = ["ion thruster", "electric propulsion", "astrodynamics", "mission analysis"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Physics",
+]
+
+[project.urls]
+Homepage = "https://github.com/ATaylorAerospace/Ion-Propulsion"
+Issues = "https://github.com/ATaylorAerospace/Ion-Propulsion/issues"
 
 [project.optional-dependencies]
 test = ["pytest>=7.0", "pytest-cov"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/ion_propulsion"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

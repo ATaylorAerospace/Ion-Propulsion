@@ -4,4 +4,6 @@ from ion_propulsion import dynamics
 from ion_propulsion import propulsion
 from ion_propulsion import optimization
 
-__all__ = ["dynamics", "propulsion", "optimization"]
+__version__ = "1.2.0"
+
+__all__ = ["dynamics", "propulsion", "optimization", "__version__"]

@@ -15,22 +15,22 @@ GEO_RADIUS = 42164.0e3 * u.m
 def geo_transfer_delta_v(r_park_km: float):
     r"""Compute Hohmann transfer delta-v from a circular parking orbit to GEO.
 
-    The two impulsive burns are derived from vis-viva:
+    The two impulsive burns are derived from vis-viva (Vallado, sec. 6.3):
 
     .. math::
 
-        v_{\\text{park}} = \\sqrt{\\frac{\\mu}{r_{\\text{park}}}}
+        v_{\text{park}} = \sqrt{\frac{\mu}{r_{\text{park}}}}
 
-        v_{\\text{geo}} = \\sqrt{\\frac{\\mu}{r_{\\text{geo}}}}
+        v_{\text{geo}} = \sqrt{\frac{\mu}{r_{\text{geo}}}}
 
-        a_t = \\frac{r_{\\text{park}} + r_{\\text{geo}}}{2}
+        a_t = \frac{r_{\text{park}} + r_{\text{geo}}}{2}
 
-        v_{t,p} = \\sqrt{\\mu \\left(\\frac{2}{r_{\\text{park}}} - \\frac{1}{a_t}\\right)}
+        v_{t,p} = \sqrt{\mu \left(\frac{2}{r_{\text{park}}} - \frac{1}{a_t}\right)}
 
-        v_{t,a} = \\sqrt{\\mu \\left(\\frac{2}{r_{\\text{geo}}} - \\frac{1}{a_t}\\right)}
+        v_{t,a} = \sqrt{\mu \left(\frac{2}{r_{\text{geo}}} - \frac{1}{a_t}\right)}
 
-        \\Delta v_1 = v_{t,p} - v_{\\text{park}}, \\quad
-        \\Delta v_2 = v_{\\text{geo}} - v_{t,a}
+        \Delta v_1 = v_{t,p} - v_{\text{park}}, \quad
+        \Delta v_2 = v_{\text{geo}} - v_{t,a}
 
     Parameters
     ----------
@@ -43,7 +43,15 @@ def geo_transfer_delta_v(r_park_km: float):
         First burn delta-v (perigee kick) in km/s.
     delta_v2 : astropy.units.Quantity
         Second burn delta-v (apogee circularization) in km/s.
+
+    Raises
+    ------
+    ValueError
+        If the parking altitude is not positive.
     """
+    if r_park_km <= 0:
+        raise ValueError("Parking orbit altitude must be positive")
+
     r_park = R_EARTH + r_park_km * u.km
     r_geo = GEO_RADIUS
 
@@ -64,9 +72,11 @@ def geo_transfer_delta_v(r_park_km: float):
 def lagrange_point_l1(m1_kg: float, m2_kg: float, R_m: float):
     r"""Approximate distance of the L1 Lagrange point from the smaller body.
 
+    Hill-sphere approximation of the restricted three-body problem:
+
     .. math::
 
-        r_{L1} = R \\left(\\frac{m_2}{3\\,m_1}\\right)^{1/3}
+        r_{L1} = R \left(\frac{m_2}{3\,m_1}\right)^{1/3}
 
     Parameters
     ----------
@@ -81,7 +91,15 @@ def lagrange_point_l1(m1_kg: float, m2_kg: float, R_m: float):
     -------
     r_L1 : astropy.units.Quantity
         Distance from the smaller body to L1 in metres.
+
+    Raises
+    ------
+    ValueError
+        If any input is not positive.
     """
+    if m1_kg <= 0 or m2_kg <= 0 or R_m <= 0:
+        raise ValueError("Masses and separation must be positive")
+
     R = R_m * u.m
     r_l1 = R * (m2_kg / (3.0 * m1_kg)) ** (1.0 / 3.0)
     return r_l1.to(u.m)
@@ -90,9 +108,11 @@ def lagrange_point_l1(m1_kg: float, m2_kg: float, R_m: float):
 def low_thrust_transfer_time(delta_v_ms: float, thrust_N: float, mass_kg: float):
     r"""Estimate the time required for a constant-thrust low-thrust transfer.
 
+    Constant-mass approximation:
+
     .. math::
 
-        t = \\frac{m \\, \\Delta v}{F}
+        t = \frac{m \, \Delta v}{F}
 
     Parameters
     ----------
@@ -107,7 +127,17 @@ def low_thrust_transfer_time(delta_v_ms: float, thrust_N: float, mass_kg: float)
     -------
     t : astropy.units.Quantity
         Transfer time in seconds.
+
+    Raises
+    ------
+    ValueError
+        If thrust or mass is not positive.
     """
+    if thrust_N <= 0:
+        raise ValueError("Thrust must be positive")
+    if mass_kg <= 0:
+        raise ValueError("Mass must be positive")
+
     t = (mass_kg * u.kg * delta_v_ms * u.m / u.s) / (thrust_N * u.N)
     return t.to(u.s)
 
@@ -121,7 +151,7 @@ def spiral_delta_v(r_initial_m: float, r_final_m: float):
 
     .. math::
 
-        \\Delta v = \\sqrt{\\frac{\\mu}{r_i}} - \\sqrt{\\frac{\\mu}{r_f}}
+        \Delta v = \sqrt{\frac{\mu}{r_i}} - \sqrt{\frac{\mu}{r_f}}
 
     Parameters
     ----------
@@ -134,7 +164,15 @@ def spiral_delta_v(r_initial_m: float, r_final_m: float):
     -------
     delta_v : astropy.units.Quantity
         Required delta-v in m/s.
+
+    Raises
+    ------
+    ValueError
+        If either radius is not positive.
     """
+    if r_initial_m <= 0 or r_final_m <= 0:
+        raise ValueError("Orbital radii must be positive")
+
     r_i = r_initial_m * u.m
     r_f = r_final_m * u.m
     delta_v = np.sqrt(MU_EARTH / r_i) - np.sqrt(MU_EARTH / r_f)

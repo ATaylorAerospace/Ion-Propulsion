@@ -7,7 +7,7 @@
  * @brief Fundamental physical constants used throughout the ion propulsion library.
  *
  * All constants are defined as \c constexpr values for compile-time evaluation.
- * Values are consistent across C++, Python, and MATLAB implementations.
+ * Values are identical across the C++, Python, and MATLAB implementations.
  */
 
 namespace ion_propulsion::constants {
@@ -32,6 +32,12 @@ inline constexpr double e_charge = 1.602176634e-19;
 
 /// @brief Xenon atom mass in kg (\f$ m_{\mathrm{Xe}} \approx 131.293\;\mathrm{u} \f$)
 inline constexpr double m_xenon = 2.18e-25;
+
+/// @brief Molybdenum atom mass in kg, used for grid erosion estimates
+inline constexpr double m_molybdenum = 1.594e-25;
+
+/// @brief Seconds in one Julian year (365.25 d)
+inline constexpr double seconds_per_julian_year = 31557600.0;
 
 } // namespace ion_propulsion::constants
 

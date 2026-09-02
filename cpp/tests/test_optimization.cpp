@@ -5,112 +5,147 @@
 #include "ion_propulsion/constants.hpp"
 
 #include <cmath>
+#include <stdexcept>
 
 using namespace ion_propulsion::optimization;
 using namespace ion_propulsion::constants;
 
-/**
- * @brief Payload fraction for Isp = 3000 s, delta-v = 4000 m/s.
- *
- * Expected: exp(-4000 / (3000 * 9.80665)) ~= 0.872
- */
-TEST(OptimizationTest, PayloadFraction_Isp3000_DV4000) {
-    const double pf = optimal_payload_fraction(3000.0, 4000.0);
-    EXPECT_NEAR(pf, 0.872, 0.01);
+namespace {
+
+constexpr double rel_tol = 1e-6;
+
+/// Cross-language golden values (identical in the Python and MATLAB suites).
+constexpr double golden_pf_3000s_4000ms          = 0.8728756599684215;
+constexpr double golden_mprop_1000kg_3000s_4000ms = 127.12434003157847;
+constexpr double golden_lifetime_100kg_3p5mgs_s  = 28571428.57142857;
+constexpr double golden_burn_3000s_5kw_s         = 19325541.892783504;
+// Optimiser results for dv = 5000 m/s, m0 = 1000 kg, eta = 0.7, one Julian year budget.
+constexpr double golden_opt_2kw_isp_s  = 2036.9951343927255;
+constexpr double golden_opt_2kw_pf     = 0.7785678565566541;
+constexpr double golden_opt_5kw_isp_s  = 4751.221131411683;
+constexpr double golden_opt_5kw_pf     = 0.8982463098059607;
+constexpr double golden_opt_10kw_isp_s = 9260.657238489515;
+constexpr double golden_opt_10kw_pf    = 0.946431802719756;
+
+constexpr double dv  = 5000.0;
+constexpr double m0  = 1000.0;
+constexpr double eta = 0.7;
+
+#define EXPECT_REL_NEAR(actual, expected) \
+    EXPECT_NEAR((actual), (expected), rel_tol * std::fabs(expected))
+
+} // anonymous namespace
+
+// ---------------------------------------------------------------------------
+// Tsiolkovsky
+// ---------------------------------------------------------------------------
+TEST(OptimizationTest, PayloadFraction_Golden) {
+    EXPECT_REL_NEAR(optimal_payload_fraction(3000.0, 4000.0), golden_pf_3000s_4000ms);
 }
 
-/**
- * @brief Zero delta-v yields payload fraction of 1.
- */
-TEST(OptimizationTest, PayloadFraction_ZeroDeltaV) {
-    const double pf = optimal_payload_fraction(3000.0, 0.0);
-    EXPECT_NEAR(pf, 1.0, 1e-12);
+TEST(OptimizationTest, PayloadFraction_ZeroDeltaVIsUnity) {
+    EXPECT_DOUBLE_EQ(optimal_payload_fraction(3000.0, 0.0), 1.0);
 }
 
-/**
- * @brief Negative Isp must throw.
- */
-TEST(OptimizationTest, PayloadFraction_InvalidIsp) {
-    EXPECT_THROW(optimal_payload_fraction(-1.0, 4000.0), std::invalid_argument);
+TEST(OptimizationTest, PayloadFraction_Monotonic) {
+    EXPECT_GT(optimal_payload_fraction(4000.0, dv), optimal_payload_fraction(2000.0, dv));
+    EXPECT_GT(optimal_payload_fraction(3000.0, 2000.0), optimal_payload_fraction(3000.0, 8000.0));
 }
 
-/**
- * @brief Propellant mass for a 1000 kg spacecraft with Isp = 3000 s, dv = 4000 m/s.
- */
-TEST(OptimizationTest, PropellantMass_Basic) {
-    const double m0    = 1000.0;
-    const double m_p   = propellant_mass(m0, 3000.0, 4000.0);
-    const double pf    = optimal_payload_fraction(3000.0, 4000.0);
-
-    // m_prop = m0 * (1 - pf)
-    EXPECT_NEAR(m_p, m0 * (1.0 - pf), 1e-6);
-    EXPECT_GT(m_p, 0.0);
-    EXPECT_LT(m_p, m0);
+TEST(OptimizationTest, PayloadFraction_InvalidIspThrows) {
+    EXPECT_THROW((void)optimal_payload_fraction(0.0, dv), std::invalid_argument);
 }
 
-/**
- * @brief Zero delta-v requires zero propellant.
- */
-TEST(OptimizationTest, PropellantMass_ZeroDV) {
-    EXPECT_NEAR(propellant_mass(1000.0, 3000.0, 0.0), 0.0, 1e-12);
+TEST(OptimizationTest, PropellantMass_Golden) {
+    EXPECT_REL_NEAR(propellant_mass(1000.0, 3000.0, 4000.0), golden_mprop_1000kg_3000s_4000ms);
 }
 
-/**
- * @brief Mission lifetime calculation.
- */
-TEST(OptimizationTest, MissionLifetime_Basic) {
-    const double m_prop = 100.0;    // kg
-    const double m_dot  = 3.5e-6;   // kg/s
-
-    const double t = mission_lifetime(m_prop, m_dot);
-    EXPECT_NEAR(t, m_prop / m_dot, 1e-3);
+TEST(OptimizationTest, PropellantMass_ZeroDeltaV) {
+    EXPECT_DOUBLE_EQ(propellant_mass(1000.0, 3000.0, 0.0), 0.0);
 }
 
-/**
- * @brief Zero mass-flow must throw.
- */
-TEST(OptimizationTest, MissionLifetime_ZeroMdot) {
-    EXPECT_THROW(mission_lifetime(100.0, 0.0), std::invalid_argument);
+TEST(OptimizationTest, PropellantMass_InvalidMassThrows) {
+    EXPECT_THROW((void)propellant_mass(0.0, 3000.0, 4000.0), std::invalid_argument);
 }
 
-/**
- * @brief Golden-section Isp optimisation must return a feasible result.
- */
-TEST(OptimizationTest, OptimizeIsp_Feasible) {
-    const double dv     = 5000.0;   // m/s
-    const double P      = 5000.0;   // W
-    const double m_tot  = 1000.0;   // kg
-
-    const auto result = optimize_isp_for_mission(dv, P, m_tot, 0.7);
-
-    EXPECT_GE(result.optimal_Isp, 1000.0);
-    EXPECT_LE(result.optimal_Isp, 10000.0);
-    EXPECT_GT(result.max_payload_fraction, 0.0);
-    EXPECT_LT(result.max_payload_fraction, 1.0);
+TEST(OptimizationTest, MissionLifetime_Golden) {
+    EXPECT_REL_NEAR(mission_lifetime(100.0, 3.5e-6), golden_lifetime_100kg_3p5mgs_s);
 }
 
-/**
- * @brief Higher power should allow a higher optimal Isp (or at least not lower).
- */
-TEST(OptimizationTest, OptimizeIsp_HigherPower) {
-    const auto r1 = optimize_isp_for_mission(5000.0, 2000.0, 1000.0);
-    const auto r2 = optimize_isp_for_mission(5000.0, 10000.0, 1000.0);
-
-    // With more power, payload fraction should be at least as good
-    EXPECT_GE(r2.max_payload_fraction, r1.max_payload_fraction - 0.01);
+TEST(OptimizationTest, MissionLifetime_InvalidFlowThrows) {
+    EXPECT_THROW((void)mission_lifetime(100.0, 0.0), std::invalid_argument);
 }
 
-/**
- * @brief Invalid power must throw.
- */
-TEST(OptimizationTest, OptimizeIsp_InvalidPower) {
-    EXPECT_THROW(optimize_isp_for_mission(5000.0, 0.0, 1000.0), std::invalid_argument);
+// ---------------------------------------------------------------------------
+// Power-limited burn time
+// ---------------------------------------------------------------------------
+TEST(OptimizationTest, BurnTime_Golden) {
+    EXPECT_REL_NEAR(power_limited_burn_time(3000.0, dv, 5000.0, m0, eta), golden_burn_3000s_5kw_s);
 }
 
-/**
- * @brief Invalid efficiency must throw.
- */
-TEST(OptimizationTest, OptimizeIsp_InvalidEfficiency) {
-    EXPECT_THROW(optimize_isp_for_mission(5000.0, 5000.0, 1000.0, 0.0), std::invalid_argument);
-    EXPECT_THROW(optimize_isp_for_mission(5000.0, 5000.0, 1000.0, 1.5), std::invalid_argument);
+TEST(OptimizationTest, BurnTime_IncreasesWithIsp) {
+    EXPECT_GT(power_limited_burn_time(4000.0, dv, 5000.0, m0, eta),
+              power_limited_burn_time(3000.0, dv, 5000.0, m0, eta));
+}
+
+TEST(OptimizationTest, BurnTime_InverselyProportionalToPower) {
+    const double t5  = power_limited_burn_time(3000.0, dv, 5000.0,  m0, eta);
+    const double t10 = power_limited_burn_time(3000.0, dv, 10000.0, m0, eta);
+    EXPECT_REL_NEAR(t5 / t10, 2.0);
+}
+
+TEST(OptimizationTest, BurnTime_InvalidEfficiencyThrows) {
+    EXPECT_THROW((void)power_limited_burn_time(3000.0, dv, 5000.0, m0, 1.5), std::invalid_argument);
+}
+
+// ---------------------------------------------------------------------------
+// Isp optimiser
+// ---------------------------------------------------------------------------
+TEST(OptimizationTest, Optimize_Golden2kW) {
+    const auto r = optimize_isp_for_mission(dv, 2000.0, m0, eta);
+    EXPECT_REL_NEAR(r.optimal_Isp,          golden_opt_2kw_isp_s);
+    EXPECT_REL_NEAR(r.max_payload_fraction, golden_opt_2kw_pf);
+}
+
+TEST(OptimizationTest, Optimize_Golden5kW) {
+    const auto r = optimize_isp_for_mission(dv, 5000.0, m0, eta);
+    EXPECT_REL_NEAR(r.optimal_Isp,          golden_opt_5kw_isp_s);
+    EXPECT_REL_NEAR(r.max_payload_fraction, golden_opt_5kw_pf);
+}
+
+TEST(OptimizationTest, Optimize_Golden10kW) {
+    const auto r = optimize_isp_for_mission(dv, 10000.0, m0, eta);
+    EXPECT_REL_NEAR(r.optimal_Isp,          golden_opt_10kw_isp_s);
+    EXPECT_REL_NEAR(r.max_payload_fraction, golden_opt_10kw_pf);
+}
+
+TEST(OptimizationTest, Optimize_BurnTimeAtOptimumMeetsBudget) {
+    const auto r = optimize_isp_for_mission(dv, 5000.0, m0, eta);
+    EXPECT_REL_NEAR(power_limited_burn_time(r.optimal_Isp, dv, 5000.0, m0, eta),
+                    seconds_per_julian_year);
+}
+
+TEST(OptimizationTest, Optimize_MorePowerAllowsHigherIsp) {
+    const auto r2  = optimize_isp_for_mission(dv, 2000.0,  m0, eta);
+    const auto r10 = optimize_isp_for_mission(dv, 10000.0, m0, eta);
+    EXPECT_GT(r10.optimal_Isp,          r2.optimal_Isp);
+    EXPECT_GT(r10.max_payload_fraction, r2.max_payload_fraction);
+}
+
+TEST(OptimizationTest, Optimize_UnconstrainedReturnsUpperBound) {
+    const auto r = optimize_isp_for_mission(dv, 1.0e6, m0, eta);
+    EXPECT_DOUBLE_EQ(r.optimal_Isp, isp_search_max_s);
+}
+
+TEST(OptimizationTest, Optimize_InfeasibleBudgetThrows) {
+    EXPECT_THROW((void)optimize_isp_for_mission(dv, 5000.0, m0, eta, 1.0), std::invalid_argument);
+}
+
+TEST(OptimizationTest, Optimize_InvalidInputsThrow) {
+    EXPECT_THROW((void)optimize_isp_for_mission(0.0, 5000.0, m0, eta),  std::invalid_argument);
+    EXPECT_THROW((void)optimize_isp_for_mission(dv,  0.0,    m0, eta),  std::invalid_argument);
+    EXPECT_THROW((void)optimize_isp_for_mission(dv,  5000.0, 0.0, eta), std::invalid_argument);
+    EXPECT_THROW((void)optimize_isp_for_mission(dv,  5000.0, m0, 0.0),  std::invalid_argument);
+    EXPECT_THROW((void)optimize_isp_for_mission(dv,  5000.0, m0, 1.5),  std::invalid_argument);
+    EXPECT_THROW((void)optimize_isp_for_mission(dv,  5000.0, m0, eta, 0.0), std::invalid_argument);
 }
