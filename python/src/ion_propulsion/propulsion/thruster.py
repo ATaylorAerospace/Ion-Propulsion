@@ -18,9 +18,14 @@ class GriddedIonThruster:
     r"""Model of a gridded ion thruster (Kaufman-type).
 
     Provides performance metrics including specific impulse, thrust, beam
-    power, efficiencies, Child--Langmuir current density, grid erosion, and
+    power, efficiencies, Child-Langmuir current density, grid erosion, and
     neutralizer power consumption.  All returned quantities carry astropy
     units for dimensional safety.
+
+    The performance relations follow Goebel and Katz, *Fundamentals of
+    Electric Propulsion*, chapter 2.  Beam divergence and multiply charged
+    ion corrections are not modelled, so the predicted specific impulse and
+    thrust are a few percent above flight data for the same operating point.
 
     Parameters
     ----------
@@ -31,19 +36,19 @@ class GriddedIonThruster:
     screen_grid_voltage_V : float
         Screen grid voltage in volts (positive).
     accel_grid_voltage_V : float
-        Accelerator grid voltage magnitude in volts (positive value;
-        the grid is biased negative).
+        Accelerator grid voltage in volts.  The grid is biased negative;
+        either sign convention is accepted and the magnitude is used.
     mass_flow_rate_kgs : float
         Propellant mass flow rate in kg/s.
     propellant_mass_kg : float, optional
         Single-ion mass in kg.  Defaults to xenon (2.18e-25 kg).
-    grid_spacing_m : float
-        Screen-to-accel grid spacing in metres.
-    screen_aperture_radius_m : float
-        Radius of a single screen grid aperture in metres.
+    grid_spacing_m : float, optional
+        Screen-to-accel grid spacing in metres.  Default 1 mm.
+    screen_aperture_radius_m : float, optional
+        Radius of a single screen grid aperture in metres.  Default 1 mm.
     discharge_loss_WperA : float, optional
-        Discharge chamber loss per ampere of beam current in W/A.
-        Defaults to 200.0.
+        Discharge chamber loss per ampere of beam current in W/A
+        (numerically equal to eV per beam ion).  Defaults to 200.0.
     """
 
     def __init__(
@@ -68,6 +73,8 @@ class GriddedIonThruster:
             raise ValueError("Grid spacing must be positive")
         if propellant_mass_kg <= 0:
             raise ValueError("Propellant mass must be positive")
+        if discharge_loss_WperA < 0:
+            raise ValueError("Discharge loss must be non-negative")
 
         self.beam_voltage_V = beam_voltage_V
         self.beam_current_A = beam_current_A
@@ -82,27 +89,46 @@ class GriddedIonThruster:
     # ----- Performance properties ------------------------------------------
 
     @property
-    def specific_impulse_s(self):
-        r"""Specific impulse incorporating extraction efficiency.
+    def exhaust_velocity_ms(self):
+        r"""Ideal ion exhaust velocity for a singly charged ion.
 
         .. math::
 
-            I_{sp} = \\frac{1}{g_0} \\sqrt{\\frac{2\\,e\\,V_{beam}}{m_{ion}}}
-                     \\; \\eta_{\\text{extract}}
+            v_b = \sqrt{\frac{2\,e\,V_{beam}}{m_{ion}}}
 
-        where :math:`\\eta_{\\text{extract}} = \\eta_e \\, \\eta_m`.
+        Returns
+        -------
+        v_b : astropy.units.Quantity
+            Exhaust velocity in m/s.
+        """
+        v_b = np.sqrt(
+            2.0 * E_CHARGE * self.beam_voltage_V * u.V / (self.propellant_mass_kg * u.kg)
+        )
+        return v_b.to(u.m / u.s)
+
+    @property
+    def specific_impulse_s(self):
+        r"""Effective specific impulse.
+
+        Following Goebel and Katz (eq. 2.4-8, with unit beam divergence and
+        no multiply charged ions), only the propellant that is actually
+        ionised and accelerated contributes to thrust:
+
+        .. math::
+
+            I_{sp} = \frac{\eta_m}{g_0} \sqrt{\frac{2\,e\,V_{beam}}{m_{ion}}}
+
+        where :math:`\eta_m` is the mass utilization efficiency.  Electrical
+        efficiency affects the input power, not the exhaust velocity, so it
+        does not appear here.
 
         Returns
         -------
         Isp : astropy.units.Quantity
             Specific impulse in seconds.
         """
-        v_exhaust = np.sqrt(
-            2.0 * E_CHARGE * self.beam_voltage_V * u.V / (self.propellant_mass_kg * u.kg)
-        )
-        eta = self._eta_extraction()
-        isp = (v_exhaust * eta / G0).to(u.s)
-        return isp
+        isp = self.mass_utilization * self.exhaust_velocity_ms / G0
+        return isp.to(u.s)
 
     @property
     def thrust_N(self):
@@ -110,17 +136,15 @@ class GriddedIonThruster:
 
         .. math::
 
-            F = \\dot{m} \\, I_{sp} \\, g_0
+            F = \dot{m} \, I_{sp} \, g_0 = \eta_m \, \dot{m} \, v_b
 
         Returns
         -------
         F : astropy.units.Quantity
             Thrust in newtons.
         """
-        isp_val = self.specific_impulse_s.value  # in seconds
-        g0_val = G0.value  # in m/s^2
-        F_val = self.mass_flow_rate_kgs * isp_val * g0_val  # in N
-        return F_val * u.N
+        F = self.mass_flow_rate_kgs * u.kg / u.s * self.specific_impulse_s * G0
+        return F.to(u.N)
 
     @property
     def beam_power_W(self):
@@ -128,7 +152,7 @@ class GriddedIonThruster:
 
         .. math::
 
-            P_{beam} = V_{beam} \\, I_{beam}
+            P_{beam} = V_{beam} \, I_{beam}
 
         Returns
         -------
@@ -143,9 +167,9 @@ class GriddedIonThruster:
 
         .. math::
 
-            P_{total} = P_{beam} + I_{beam} \\, \\epsilon_d
+            P_{total} = P_{beam} + I_{beam} \, \epsilon_d
 
-        where :math:`\\epsilon_d` is the discharge loss per ampere.
+        where :math:`\epsilon_d` is the discharge loss per ampere.
 
         Returns
         -------
@@ -162,7 +186,7 @@ class GriddedIonThruster:
 
         .. math::
 
-            \\eta_e = \\frac{P_{beam}}{P_{total}}
+            \eta_e = \frac{P_{beam}}{P_{total}}
 
         Returns
         -------
@@ -177,7 +201,7 @@ class GriddedIonThruster:
 
         .. math::
 
-            \\eta_m = \\frac{I_{beam} \\, m_{ion}}{e \\, \\dot{m}}
+            \eta_m = \frac{I_{beam} \, m_{ion}}{e \, \dot{m}}
 
         Returns
         -------
@@ -193,36 +217,49 @@ class GriddedIonThruster:
     def ion_extraction_efficiency(self):
         r"""Combined ion extraction efficiency.
 
+        Product of the electrical and mass utilization efficiencies; with
+        unit beam divergence this equals the total thruster efficiency
+        :math:`\eta_T = \eta_e \, \eta_m` of Goebel and Katz eq. 2.5-7.
+
         .. math::
 
-            \\eta_{\\text{extract}} = \\eta_e \\, \\eta_m
+            \eta_{\text{extract}} = \eta_e \, \eta_m
 
         Returns
         -------
         eta : float
             Dimensionless combined efficiency.
         """
-        return self._eta_extraction()
+        return self.electrical_efficiency * self.mass_utilization
 
     @property
     def child_langmuir_current_A(self):
-        r"""Child--Langmuir space-charge-limited current density.
+        r"""Child-Langmuir space-charge-limited current density.
 
         .. math::
 
-            J_{CL} = \\frac{4}{9} \\, \\varepsilon_0
-                     \\sqrt{\\frac{2\\,e}{m_{ion}}}
-                     \\; \\frac{V_{total}^{3/2}}{d^2}
+            J_{CL} = \frac{4}{9} \, \varepsilon_0
+                     \sqrt{\frac{2\,e}{m_{ion}}}
+                     \; \frac{V_{total}^{3/2}}{d^2}
 
-        where :math:`V_{total} = V_{screen} + V_{accel}` and :math:`d` is
-        the grid gap.
+        where :math:`V_{total} = V_{screen} + |V_{accel}|` is the total
+        voltage across the grid gap :math:`d`.  Despite the ``_A`` suffix,
+        kept for API compatibility, the value is a current *density*.
 
         Returns
         -------
         J_CL : astropy.units.Quantity
             Space-charge-limited current density in A/m^2.
+
+        Raises
+        ------
+        ValueError
+            If the total extraction voltage is not positive.
         """
-        V_total = (self.screen_grid_voltage_V + self.accel_grid_voltage_V) * u.V
+        V_total_val = self.screen_grid_voltage_V + abs(self.accel_grid_voltage_V)
+        if V_total_val <= 0:
+            raise ValueError("Total extraction voltage (screen + |accel|) must be positive")
+        V_total = V_total_val * u.V
         d = self.grid_spacing_m * u.m
         coeff = (4.0 / 9.0) * EPSILON_0 * np.sqrt(
             2.0 * E_CHARGE / (self.propellant_mass_kg * u.kg)
@@ -235,7 +272,7 @@ class GriddedIonThruster:
 
         .. math::
 
-            \\dot{m}_{\\text{erosion}} = Y_s \\, \\frac{I_{beam} \\, m_{grid}}{e}
+            \dot{m}_{\text{erosion}} = Y_s \, \frac{I_{beam} \, m_{grid}}{e}
 
         where :math:`Y_s` is the sputter yield (atoms per ion) and
         :math:`m_{grid}` is the mass of one grid atom (molybdenum).
@@ -250,6 +287,8 @@ class GriddedIonThruster:
         erosion_rate : astropy.units.Quantity
             Mass erosion rate in kg/s.
         """
+        if sputter_yield <= 0:
+            raise ValueError("Sputter yield must be positive")
         erosion = sputter_yield * self.beam_current_A * u.A * M_MOLYBDENUM / E_CHARGE
         return erosion.to(u.kg / u.s)
 
@@ -260,7 +299,7 @@ class GriddedIonThruster:
 
         .. math::
 
-            P_{neut} = V_{keeper} \\, I_{keeper}
+            P_{neut} = V_{keeper} \, I_{keeper}
 
         Parameters
         ----------
@@ -274,10 +313,6 @@ class GriddedIonThruster:
         P_neut : astropy.units.Quantity
             Neutralizer power in watts.
         """
+        if keeper_voltage <= 0 or keeper_current <= 0:
+            raise ValueError("Keeper voltage and current must be positive")
         return (keeper_voltage * keeper_current) * u.W
-
-    # ----- Internal helpers ------------------------------------------------
-
-    def _eta_extraction(self) -> float:
-        """Combined extraction efficiency (eta_e * eta_m)."""
-        return self.electrical_efficiency * self.mass_utilization

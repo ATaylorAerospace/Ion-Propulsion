@@ -11,14 +11,14 @@ function frac = optimal_payload_fraction(Isp_s, delta_v_ms)
 %
 %   Inputs:
 %       Isp_s      - Specific impulse (s)
-%       delta_v_ms - Mission delta-v (m/s)
+%       delta_v_ms - Mission delta-v (m/s), zero allowed
 %
 %   Outputs:
 %       frac       - Payload mass fraction (dimensionless)
 
     arguments
         Isp_s      (1,1) double {mustBePositive}
-        delta_v_ms (1,1) double {mustBePositive}
+        delta_v_ms (1,1) double {mustBeNonnegative}
     end
 
     g0 = 9.80665;  % m/s^2

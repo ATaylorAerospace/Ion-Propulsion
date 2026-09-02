@@ -5,7 +5,10 @@ classdef GriddedIonThruster
 %   Encapsulates the key operating parameters of a gridded ion thruster
 %   and provides methods for computing performance metrics including
 %   specific impulse, thrust, efficiencies, Child-Langmuir current
-%   density, and grid erosion rate.
+%   density, and grid erosion rate. Relations follow Goebel and Katz,
+%   Fundamentals of Electric Propulsion, chapter 2. Beam divergence and
+%   multiply charged ion corrections are not modelled, so predicted Isp
+%   and thrust sit a few percent above flight data.
 %
 %   Example:
 %       t = GriddedIonThruster(1500, 2.0, 1100, -200, 5e-6, ...
@@ -16,19 +19,20 @@ classdef GriddedIonThruster
         beam_voltage          double  % Screen/beam voltage (V)
         beam_current          double  % Ion beam current (A)
         screen_grid_voltage   double  % Screen grid voltage (V)
-        accel_grid_voltage    double  % Accelerator grid voltage (V)
+        accel_grid_voltage    double  % Accelerator grid voltage (V), either sign
         mass_flow_rate        double  % Propellant mass flow rate (kg/s)
         propellant_mass       double  % Single-ion mass (kg)
         grid_spacing          double  % Screen-to-accel grid spacing (m)
         screen_aperture_radius double % Screen grid aperture radius (m)
-        discharge_loss        double  % Discharge loss per beam ion (W/A)
+        discharge_loss        double  % Discharge loss per beam ampere (W/A)
     end
 
     properties (Constant, Access = private)
-        g0        = 9.80665;            % Standard gravitational acceleration (m/s^2)
-        epsilon_0 = 8.854187817e-12;    % Vacuum permittivity (F/m)
-        e_charge  = 1.602176634e-19;    % Elementary charge (C)
-        m_xenon   = 2.18e-25;           % Xenon ion mass (kg)
+        g0           = 9.80665;          % Standard gravitational acceleration (m/s^2)
+        epsilon_0    = 8.854187817e-12;  % Vacuum permittivity (F/m)
+        e_charge     = 1.602176634e-19;  % Elementary charge (C)
+        m_xenon      = 2.18e-25;         % Xenon ion mass (kg)
+        m_molybdenum = 1.594e-25;        % Molybdenum atom mass (kg)
     end
 
     methods
@@ -47,11 +51,12 @@ classdef GriddedIonThruster
         %       beam_voltage          - Beam/screen voltage (V)
         %       beam_current          - Beam current (A)
         %       screen_grid_voltage   - Screen grid voltage (V)
-        %       accel_grid_voltage    - Accelerator grid voltage (V)
+        %       accel_grid_voltage    - Accelerator grid voltage (V); the grid is
+        %                               biased negative, either sign is accepted
         %       mass_flow_rate        - Propellant mass flow rate (kg/s)
         %       propellant_mass       - Propellant ion mass (kg), default 2.18e-25
-        %       grid_spacing          - Grid spacing (m)
-        %       screen_aperture_radius - Screen aperture radius (m)
+        %       grid_spacing          - Grid spacing (m), default 1e-3
+        %       screen_aperture_radius - Screen aperture radius (m), default 1e-3
         %       discharge_loss        - Discharge loss (W/A), default 200.0
 
             arguments
@@ -77,22 +82,33 @@ classdef GriddedIonThruster
             obj.discharge_loss         = discharge_loss;
         end
 
-        function Isp = specific_impulse(obj)
-        % SPECIFIC_IMPULSE Effective specific impulse of the thruster.
+        function v_b = exhaust_velocity(obj)
+        % EXHAUST_VELOCITY Ideal exhaust velocity of a singly charged ion (m/s).
         %
-        %   $$I_{sp} = \frac{1}{g_0}\sqrt{\frac{2\,e\,V_{beam}}{m_{ion}}} \cdot \eta_{extraction}$$
-        %
-        %   where $\eta_{extraction} = \eta_m \cdot \eta_e$.
+        %   $$v_b = \sqrt{\frac{2\,e\,V_{beam}}{m_{ion}}}$$
 
-            eta_ext = obj.mass_utilization() * obj.electrical_efficiency();
-            v_exhaust = sqrt(2.0 * obj.e_charge * obj.beam_voltage / obj.propellant_mass);
-            Isp = (v_exhaust / obj.g0) * eta_ext;
+            v_b = sqrt(2.0 * obj.e_charge * obj.beam_voltage / obj.propellant_mass);
+        end
+
+        function Isp = specific_impulse(obj)
+        % SPECIFIC_IMPULSE Effective specific impulse of the thruster (s).
+        %
+        %   Goebel and Katz eq. 2.4-8 with unit beam divergence and no
+        %   multiply charged ions: only the ionised propellant fraction
+        %   contributes to thrust.
+        %
+        %   $$I_{sp} = \frac{\eta_m}{g_0}\sqrt{\frac{2\,e\,V_{beam}}{m_{ion}}}$$
+        %
+        %   Electrical efficiency affects input power, not exhaust velocity,
+        %   and therefore does not appear here.
+
+            Isp = obj.mass_utilization() * obj.exhaust_velocity() / obj.g0;
         end
 
         function F = thrust(obj)
         % THRUST Effective thrust produced by the thruster (N).
         %
-        %   $$F = \dot{m} \cdot I_{sp} \cdot g_0$$
+        %   $$F = \dot{m} \cdot I_{sp} \cdot g_0 = \eta_m\,\dot{m}\,v_b$$
 
             F = obj.mass_flow_rate * obj.specific_impulse() * obj.g0;
         end
@@ -133,6 +149,9 @@ classdef GriddedIonThruster
         function eta = ion_extraction_efficiency(obj)
         % ION_EXTRACTION_EFFICIENCY Combined electrical and mass utilization efficiency.
         %
+        %   With unit beam divergence this equals the total thruster
+        %   efficiency of Goebel and Katz eq. 2.5-7.
+        %
         %   $$\eta_{ext} = \eta_e \cdot \eta_m$$
 
             eta = obj.electrical_efficiency() * obj.mass_utilization();
@@ -144,9 +163,14 @@ classdef GriddedIonThruster
         %   $$J_{CL} = \frac{4}{9}\,\varepsilon_0\,\sqrt{\frac{2\,e}{m_{ion}}}
         %              \,\frac{V_{total}^{3/2}}{d^2}$$
         %
-        %   where $V_{total} = V_{screen} + |V_{accel}|$.
+        %   where $V_{total} = V_{screen} + |V_{accel}|$. Errors if the
+        %   total extraction voltage is not positive.
 
             V_total = obj.screen_grid_voltage + abs(obj.accel_grid_voltage);
+            if V_total <= 0
+                error('GriddedIonThruster:InvalidVoltage', ...
+                    'Total extraction voltage (screen + |accel|) must be positive');
+            end
             J_CL = (4.0 / 9.0) * obj.epsilon_0 * ...
                     sqrt(2.0 * obj.e_charge / obj.propellant_mass) * ...
                     V_total^(3.0/2.0) / obj.grid_spacing^2;
@@ -161,26 +185,29 @@ classdef GriddedIonThruster
         %   as the grid material.
         %
         %   Inputs:
-        %       sputter_yield - Sputter yield (atoms/ion)
+        %       sputter_yield - Sputter yield (atoms/ion), default 0.1
 
             arguments
                 obj
-                sputter_yield (1,1) double {mustBePositive}
+                sputter_yield (1,1) double {mustBePositive} = 0.1
             end
 
-            m_molybdenum = 1.594e-25;  % kg per Mo atom
-            erosion = sputter_yield * obj.beam_current * m_molybdenum / obj.e_charge;
+            erosion = sputter_yield * obj.beam_current * obj.m_molybdenum / obj.e_charge;
         end
 
         function P = neutralizer_power(obj, keeper_voltage, keeper_current)
         % NEUTRALIZER_POWER Power consumed by the neutralizer keeper (W).
         %
         %   $$P_{neut} = V_{keeper} \cdot I_{keeper}$$
+        %
+        %   Inputs:
+        %       keeper_voltage - Keeper voltage (V), default 20
+        %       keeper_current - Keeper current (A), default 2
 
             arguments
                 obj
-                keeper_voltage (1,1) double {mustBePositive}
-                keeper_current (1,1) double {mustBePositive}
+                keeper_voltage (1,1) double {mustBePositive} = 20.0
+                keeper_current (1,1) double {mustBePositive} = 2.0
             end
 
             P = keeper_voltage * keeper_current;
