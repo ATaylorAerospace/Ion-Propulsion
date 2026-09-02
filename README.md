@@ -278,7 +278,11 @@ Ion-Propulsion/
 │   └── workflows/
 │       └── ci.yml                        # GitHub Actions: pytest 3.10 to 3.12, CMake + ctest, MATLAB
 ├── docs/
-│   └── geosats.png                       # Hero banner image
+│   ├── README.md                         # How to regenerate the banner
+│   ├── geosats.png                       # Hero banner (2480 x 1380), rendered from geosats.svg
+│   ├── geosats.svg                       # Editable banner source
+│   └── archive/
+│       └── geosats_2025_collage.png      # Original 2025 banner, kept for reference
 ├── python/
 │   ├── pyproject.toml                    # Hatch build, numpy + astropy runtime deps
 │   ├── README.md                         # Package README shipped in the wheel
