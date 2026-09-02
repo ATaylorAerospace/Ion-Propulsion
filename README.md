@@ -281,6 +281,7 @@ Ion-Propulsion/
 │   └── geosats.png                       # Hero banner image
 ├── python/
 │   ├── pyproject.toml                    # Hatch build, numpy + astropy runtime deps
+│   ├── README.md                         # Package README shipped in the wheel
 │   ├── src/ion_propulsion/
 │   │   ├── __init__.py                   # Package version and module exports
 │   │   ├── dynamics/mission_profiles.py  # Hohmann, L1, low-thrust time, spiral
