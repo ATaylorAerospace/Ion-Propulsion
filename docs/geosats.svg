@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Author: A Taylor | Purpose: Editable source of the repository banner docs/geosats.png | Ref: Goebel/Katz/Vallado -->
+<svg width="2480" height="1380" viewBox="0 0 2480 1380" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      svg { font-family: "DejaVu Sans", "Liberation Sans", Arial, sans-serif; }
+      .mono { font-family: "DejaVu Sans Mono", "Liberation Mono", monospace; }
+    </style>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0a1830"/><stop offset="1" stop-color="#122a52"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16294d"/><stop offset="1" stop-color="#0f2142"/>
+    </linearGradient>
+    <linearGradient id="panelHead" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1c3560"/><stop offset="1" stop-color="#16294d"/>
+    </linearGradient>
+    <linearGradient id="plume" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#9ad8ff" stop-opacity="0.95"/>
+      <stop offset="0.35" stop-color="#5aa8ff" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#7a5cff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="plumeCore" cx="0" cy="0.5" r="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="0.4" stop-color="#8fd3ff" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#8fd3ff" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="earth" cx="0.35" cy="0.3" r="0.8">
+      <stop offset="0" stop-color="#3f8fe0"/><stop offset="0.6" stop-color="#1c4f9a"/><stop offset="1" stop-color="#0b2a5a"/>
+    </radialGradient>
+    <radialGradient id="earthGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0.78" stop-color="#4aa3ff" stop-opacity="0"/><stop offset="1" stop-color="#4aa3ff" stop-opacity="0.4"/>
+    </radialGradient>
+    <linearGradient id="cell" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#26457f"/><stop offset="1" stop-color="#17325f"/>
+    </linearGradient>
+    <linearGradient id="bus" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c9d3e3"/><stop offset="1" stop-color="#8797b1"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="14" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <pattern id="grid" width="22" height="34" patternUnits="userSpaceOnUse">
+      <rect width="22" height="34" fill="url(#cell)"/>
+      <path d="M0 0H22M0 34H22M0 0V34" stroke="#3d6bb5" stroke-width="1.2" fill="none"/>
+    </pattern>
+  </defs>
+
+  <!-- background and stars -->
+  <rect width="2480" height="1380" fill="url(#bg)"/>
+  <g fill="#ffffff" opacity="0.7">
+    <circle cx="180" cy="120" r="1.6"/><circle cx="420" cy="60" r="1.2"/><circle cx="760" cy="150" r="1.4"/><circle cx="1010" cy="40" r="1.1"/>
+    <circle cx="1490" cy="90" r="1.5"/><circle cx="1720" cy="150" r="1.1"/><circle cx="2100" cy="70" r="1.6"/><circle cx="2350" cy="130" r="1.2"/>
+    <circle cx="90" cy="560" r="1.3"/><circle cx="2400" cy="640" r="1.4"/><circle cx="1240" cy="1005" r="1.0"/><circle cx="1330" cy="560" r="1.0"/>
+    <circle cx="960" cy="560" r="1.1"/><circle cx="1560" cy="600" r="1.3"/><circle cx="2200" cy="980" r="1.2"/><circle cx="2300" cy="820" r="1.1"/>
+    <circle cx="700" cy="590" r="1.2"/><circle cx="1900" cy="990" r="1.0"/><circle cx="2050" cy="720" r="1.3"/>
+  </g>
+
+  <!-- title -->
+  <text x="1240" y="88" text-anchor="middle" fill="#ffffff" font-size="64" font-weight="700" letter-spacing="6">ION-PROPULSION: GRIDDED ION THRUSTER SUITE</text>
+  <text x="1240" y="136" text-anchor="middle" fill="#b9c6dc" font-size="28" letter-spacing="1">Tri-Language Physics Core (Python · C++20 · MATLAB) for Thruster Modeling and Mission Analysis</text>
+
+  <!-- top-left panel: thruster physics -->
+  <g transform="translate(40,180)">
+    <rect width="980" height="300" rx="22" fill="url(#panel)" stroke="#3d5a8a" stroke-width="2"/>
+    <rect width="980" height="66" rx="22" fill="url(#panelHead)"/>
+    <rect y="44" width="980" height="22" fill="url(#panelHead)"/>
+    <text x="490" y="45" text-anchor="middle" fill="#4fd6c0" font-size="30" font-weight="700" letter-spacing="3">GRIDDED ION THRUSTER PHYSICS</text>
+    <g class="mono" fill="#e6edf7" font-size="28">
+      <text x="50" y="118">v<tspan font-size="19" dy="8">b</tspan><tspan dy="-8"> = √(2 e V</tspan><tspan font-size="19" dy="8">b</tspan><tspan dy="-8"> / m</tspan><tspan font-size="19" dy="8">i</tspan><tspan dy="-8">)</tspan><tspan fill="#8fa3c4" dx="60">ideal exhaust velocity</tspan></text>
+      <text x="50" y="166">I<tspan font-size="19" dy="8">sp</tspan><tspan dy="-8"> = η</tspan><tspan font-size="19" dy="8">m</tspan><tspan dy="-8"> · v</tspan><tspan font-size="19" dy="8">b</tspan><tspan dy="-8"> / g</tspan><tspan font-size="19" dy="8">0</tspan><tspan dy="-8" fill="#8fa3c4" dx="110">mass utilization η</tspan><tspan font-size="19" dy="8" fill="#8fa3c4">m</tspan></text>
+      <text x="50" y="214">F = ṁ · I<tspan font-size="19" dy="8">sp</tspan><tspan dy="-8"> · g</tspan><tspan font-size="19" dy="8">0</tspan><tspan dy="-8" fill="#8fa3c4" dx="164">thrust</tspan></text>
+      <text x="50" y="262">J<tspan font-size="19" dy="8">CL</tspan><tspan dy="-8"> = (4/9) ε</tspan><tspan font-size="19" dy="8">0</tspan><tspan dy="-8"> √(2e/m</tspan><tspan font-size="19" dy="8">i</tspan><tspan dy="-8">) · V</tspan><tspan font-size="19" dy="8">T</tspan><tspan font-size="19" dy="-24">3/2</tspan><tspan dy="16"> / d²</tspan><tspan fill="#8fa3c4" dx="40">Child-Langmuir limit</tspan></text>
+    </g>
+  </g>
+
+  <!-- top-right panel: NSTAR benchmark -->
+  <g transform="translate(1460,180)">
+    <rect width="980" height="300" rx="22" fill="url(#panel)" stroke="#3d5a8a" stroke-width="2"/>
+    <rect width="980" height="66" rx="22" fill="url(#panelHead)"/>
+    <rect y="44" width="980" height="22" fill="url(#panelHead)"/>
+    <text x="490" y="45" text-anchor="middle" fill="#4fd6c0" font-size="30" font-weight="700" letter-spacing="3">NSTAR FLIGHT BENCHMARK (DEEP SPACE 1)</text>
+    <g font-size="28" fill="#e6edf7">
+      <g font-weight="700" fill="#cfe0ff">
+        <text x="60" y="122">Quantity</text><text x="470" y="122" text-anchor="end">Model</text><text x="690" y="122" text-anchor="end">Flight</text><text x="920" y="122" text-anchor="end">Δ</text>
+      </g>
+      <line x1="50" y1="138" x2="930" y2="138" stroke="#3d5a8a" stroke-width="2"/>
+      <text x="60" y="180">Specific impulse</text><text class="mono" x="470" y="180" text-anchor="end">3273 s</text><text class="mono" x="690" y="180" text-anchor="end">3100 s</text><text class="mono" x="920" y="180" text-anchor="end" fill="#f5c451">+5.6 %</text>
+      <text x="60" y="226">Thrust</text><text class="mono" x="470" y="226" text-anchor="end">96.3 mN</text><text class="mono" x="690" y="226" text-anchor="end">92 mN</text><text class="mono" x="920" y="226" text-anchor="end" fill="#f5c451">+4.7 %</text>
+      <text x="60" y="272">Input power</text><text class="mono" x="470" y="272" text-anchor="end">2288 W</text><text class="mono" x="690" y="272" text-anchor="end">2300 W</text><text class="mono" x="920" y="272" text-anchor="end" fill="#4fd6c0">-0.5 %</text>
+    </g>
+  </g>
+
+  <!-- scene band -->
+  <text x="1240" y="522" text-anchor="middle" fill="#4fd6c0" font-size="26" font-weight="700" letter-spacing="3">GEO COMMUNICATIONS SATELLITE ON XENON ION PROPULSION</text>
+
+  <g transform="translate(330,805)">
+    <circle r="205" fill="url(#earthGlow)"/>
+    <circle r="175" fill="url(#earth)"/>
+    <path d="M-70 -145 q35 12 70 -6 t88 12 q23 23 -6 41 q-53 18 -82 -6 q-41 -12 -70 -41z" fill="#2f9a6c" opacity="0.55"/>
+    <path d="M23 35 q47 -18 82 6 q23 35 -18 53 q-53 12 -64 -18z" fill="#2f9a6c" opacity="0.5"/>
+    <path d="M-170 -41 q35 -41 88 -47 q23 12 0 35 q-47 35 -88 12z" fill="#2f9a6c" opacity="0.45"/>
+    <ellipse rx="200" ry="70" fill="none" stroke="#9ad8ff" stroke-width="2" opacity="0.7"/>
+    <ellipse rx="860" ry="300" fill="none" stroke="#4fd6c0" stroke-width="2.5" stroke-dasharray="14 12" opacity="0.7"/>
+    <text x="0" y="-228" fill="#8fa3c4" font-size="22" text-anchor="middle">LEO 200 km parking orbit</text>
+    <text x="300" y="-205" fill="#4fd6c0" font-size="22" text-anchor="middle">GEO 35 786 km</text>
+  </g>
+
+  <g class="mono" fill="#f5c451" font-size="22" text-anchor="middle">
+    <text x="1240" y="1075">Hohmann 3.93 km/s</text>
+    <text x="1240" y="1107">Spiral   4.71 km/s</text>
+  </g>
+
+  <g transform="translate(1290,780) scale(0.82) rotate(-8)">
+    <g transform="translate(-560,-95)">
+      <rect x="0" y="0" width="420" height="190" rx="6" fill="url(#grid)" stroke="#6f95d6" stroke-width="3"/>
+      <rect x="420" y="80" width="60" height="30" fill="#aab6c9"/>
+    </g>
+    <g transform="translate(140,-95)">
+      <rect x="0" y="0" width="420" height="190" rx="6" fill="url(#grid)" stroke="#6f95d6" stroke-width="3"/>
+      <rect x="-60" y="80" width="60" height="30" fill="#aab6c9"/>
+    </g>
+    <rect x="-80" y="-120" width="220" height="240" rx="14" fill="url(#bus)" stroke="#e8eef8" stroke-width="3"/>
+    <rect x="-60" y="-100" width="180" height="200" rx="8" fill="none" stroke="#5f6f8a" stroke-width="2" opacity="0.8"/>
+    <rect x="-40" y="-70" width="60" height="40" fill="#2b3a55"/>
+    <rect x="40" y="-70" width="60" height="40" fill="#2b3a55"/>
+    <rect x="-40" y="10" width="140" height="60" fill="#334766"/>
+    <g transform="translate(30,-190)">
+      <ellipse rx="110" ry="62" fill="#e8eef8" stroke="#8fa3c4" stroke-width="3"/>
+      <ellipse rx="80" ry="42" fill="none" stroke="#b9c6dc" stroke-width="2"/>
+      <line x1="0" y1="0" x2="0" y2="70" stroke="#c9d3e3" stroke-width="6"/>
+      <line x1="-40" y1="-30" x2="0" y2="0" stroke="#c9d3e3" stroke-width="4"/>
+      <circle r="8" fill="#4fd6c0" filter="url(#softGlow)"/>
+    </g>
+    <g transform="translate(140,0)">
+      <rect x="0" y="-45" width="70" height="90" rx="6" fill="#5b6a85" stroke="#c9d3e3" stroke-width="3"/>
+      <g stroke="#8fd3ff" stroke-width="2" opacity="0.9">
+        <line x1="70" y1="-30" x2="70" y2="30"/>
+        <line x1="62" y1="-38" x2="62" y2="38"/>
+      </g>
+      <g fill="#8fd3ff">
+        <circle cx="70" cy="-24" r="3"/><circle cx="70" cy="-12" r="3"/><circle cx="70" cy="0" r="3"/><circle cx="70" cy="12" r="3"/><circle cx="70" cy="24" r="3"/>
+      </g>
+      <g filter="url(#glow)">
+        <path d="M74 -34 L560 -120 L560 120 L74 34 Z" fill="url(#plume)"/>
+        <ellipse cx="130" cy="0" rx="120" ry="34" fill="url(#plumeCore)"/>
+      </g>
+      <g fill="#cfe9ff" opacity="0.9">
+        <circle cx="200" cy="-12" r="2.5"/><circle cx="260" cy="20" r="2"/><circle cx="330" cy="-40" r="2.5"/><circle cx="380" cy="30" r="2"/>
+        <circle cx="440" cy="-70" r="2"/><circle cx="500" cy="60" r="2.5"/><circle cx="540" cy="-20" r="2"/>
+      </g>
+      <text x="320" y="150" fill="#9ad8ff" font-size="26" text-anchor="middle">Xe⁺ beam · neutralizer e⁻</text>
+    </g>
+  </g>
+
+  <!-- bottom-left panel: mission analysis -->
+  <g transform="translate(40,1040)">
+    <rect width="980" height="300" rx="22" fill="url(#panel)" stroke="#3d5a8a" stroke-width="2"/>
+    <rect width="980" height="66" rx="22" fill="url(#panelHead)"/>
+    <rect y="44" width="980" height="22" fill="url(#panelHead)"/>
+    <text x="490" y="45" text-anchor="middle" fill="#4fd6c0" font-size="30" font-weight="700" letter-spacing="3">MISSION ANALYSIS AND OPTIMIZATION</text>
+    <g font-size="27" fill="#e6edf7">
+      <text x="50" y="122"><tspan fill="#4fd6c0">✔</tspan>  Hohmann and Edelbaum spiral transfers, L1 Lagrange point</text>
+      <text x="50" y="170"><tspan fill="#4fd6c0">✔</tspan>  Tsiolkovsky payload fraction, propellant mass, lifetime</text>
+      <text x="50" y="218"><tspan fill="#4fd6c0">✔</tspan>  Power-limited burn time and optimal I<tspan font-size="18" dy="7">sp</tspan><tspan dy="-7"> by bisection</tspan></text>
+    </g>
+    <text class="mono" x="50" y="272" font-size="24" fill="#f5c451">5 km/s · 5 kW · 1000 kg · 1 yr  →  Isp* 4751 s · payload 0.898</text>
+  </g>
+
+  <!-- bottom-right panel: tri-language parity -->
+  <g transform="translate(1460,1040)">
+    <rect width="980" height="300" rx="22" fill="url(#panel)" stroke="#3d5a8a" stroke-width="2"/>
+    <rect width="980" height="66" rx="22" fill="url(#panelHead)"/>
+    <rect y="44" width="980" height="22" fill="url(#panelHead)"/>
+    <text x="490" y="45" text-anchor="middle" fill="#4fd6c0" font-size="30" font-weight="700" letter-spacing="3">TRI-LANGUAGE PARITY, VERIFIED TO 1e-6</text>
+    <g font-size="22" font-weight="700" text-anchor="middle">
+      <rect x="45" y="100" width="290" height="70" rx="14" fill="#1f3a6a" stroke="#4fd6c0" stroke-width="2"/>
+      <text x="190" y="145" fill="#ffffff">Python + astropy</text>
+      <rect x="345" y="100" width="290" height="70" rx="14" fill="#1f3a6a" stroke="#4fd6c0" stroke-width="2"/>
+      <text x="490" y="145" fill="#ffffff">C++20 + Google Test</text>
+      <rect x="645" y="100" width="290" height="70" rx="14" fill="#1f3a6a" stroke="#4fd6c0" stroke-width="2"/>
+      <text x="790" y="145" fill="#ffffff">MATLAB + arguments</text>
+    </g>
+    <g class="mono" font-size="24" fill="#e6edf7">
+      <text x="50" y="222">179 tests · shared golden values · NSTAR benchmark</text>
+      <text x="50" y="268" fill="#8fa3c4">CI: pytest 3.10 to 3.12 · CMake + ctest · matlab.unittest</text>
+    </g>
+  </g>
+</svg>
