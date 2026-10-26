@@ -11,7 +11,7 @@ namespace ion_propulsion::dynamics {
 using namespace ion_propulsion::constants;
 
 TransferDeltaV geo_transfer_delta_v(double r_park_km) {
-    if (r_park_km <= 0.0) {
+    if (!std::isfinite(r_park_km) || r_park_km <= 0.0) {
         throw std::invalid_argument("Parking orbit altitude must be positive");
     }
 
@@ -40,7 +40,9 @@ TransferDeltaV geo_transfer_delta_v(double r_park_km) {
 }
 
 double lagrange_point_l1(double m1_kg, double m2_kg, double R_m) {
-    if (m1_kg <= 0.0 || m2_kg <= 0.0 || R_m <= 0.0) {
+    if (!std::isfinite(m1_kg) || m1_kg <= 0.0
+        || !std::isfinite(m2_kg) || m2_kg <= 0.0
+        || !std::isfinite(R_m) || R_m <= 0.0) {
         throw std::invalid_argument("Masses and distance must be positive");
     }
 
@@ -49,10 +51,13 @@ double lagrange_point_l1(double m1_kg, double m2_kg, double R_m) {
 }
 
 double low_thrust_transfer_time(double delta_v_ms, double thrust_N, double mass_kg) {
-    if (thrust_N <= 0.0) {
+    if (!std::isfinite(delta_v_ms) || delta_v_ms < 0.0) {
+        throw std::invalid_argument("Delta-v must be non-negative");
+    }
+    if (!std::isfinite(thrust_N) || thrust_N <= 0.0) {
         throw std::invalid_argument("Thrust must be positive");
     }
-    if (mass_kg <= 0.0) {
+    if (!std::isfinite(mass_kg) || mass_kg <= 0.0) {
         throw std::invalid_argument("Mass must be positive");
     }
 
@@ -61,7 +66,8 @@ double low_thrust_transfer_time(double delta_v_ms, double thrust_N, double mass_
 }
 
 double spiral_delta_v(double r_initial_m, double r_final_m) {
-    if (r_initial_m <= 0.0 || r_final_m <= 0.0) {
+    if (!std::isfinite(r_initial_m) || r_initial_m <= 0.0
+        || !std::isfinite(r_final_m) || r_final_m <= 0.0) {
         throw std::invalid_argument("Orbital radii must be positive");
     }
 

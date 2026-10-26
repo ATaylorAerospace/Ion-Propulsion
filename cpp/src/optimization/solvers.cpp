@@ -18,15 +18,18 @@ constexpr double bisection_tol_s    = 1.0e-9;
 } // namespace
 
 double optimal_payload_fraction(double Isp_s, double delta_v_ms) {
-    if (Isp_s <= 0.0) {
+    if (!std::isfinite(Isp_s) || Isp_s <= 0.0) {
         throw std::invalid_argument("Specific impulse must be positive");
+    }
+    if (!std::isfinite(delta_v_ms) || delta_v_ms < 0.0) {
+        throw std::invalid_argument("Delta-v must be non-negative");
     }
     // Tsiolkovsky:  m_f/m_0 = exp(-dv / (Isp * g0))
     return std::exp(-delta_v_ms / (Isp_s * g0));
 }
 
 double propellant_mass(double m_initial_kg, double Isp_s, double delta_v_ms) {
-    if (m_initial_kg <= 0.0) {
+    if (!std::isfinite(m_initial_kg) || m_initial_kg <= 0.0) {
         throw std::invalid_argument("Initial mass must be positive");
     }
     // m_prop = m_0 * (1 - exp(-dv / (Isp * g0)))
@@ -34,7 +37,10 @@ double propellant_mass(double m_initial_kg, double Isp_s, double delta_v_ms) {
 }
 
 double mission_lifetime(double propellant_mass_kg, double mass_flow_rate_kgs) {
-    if (mass_flow_rate_kgs <= 0.0) {
+    if (!std::isfinite(propellant_mass_kg) || propellant_mass_kg < 0.0) {
+        throw std::invalid_argument("Propellant mass must be non-negative");
+    }
+    if (!std::isfinite(mass_flow_rate_kgs) || mass_flow_rate_kgs <= 0.0) {
         throw std::invalid_argument("Mass flow rate must be positive");
     }
     return propellant_mass_kg / mass_flow_rate_kgs;
@@ -45,10 +51,19 @@ double power_limited_burn_time(double Isp_s,
                                double power_W,
                                double total_mass_kg,
                                double efficiency) {
-    if (Isp_s <= 0.0)         throw std::invalid_argument("Specific impulse must be positive");
-    if (power_W <= 0.0)       throw std::invalid_argument("Power must be positive");
-    if (total_mass_kg <= 0.0) throw std::invalid_argument("Total mass must be positive");
-    if (efficiency <= 0.0 || efficiency > 1.0) {
+    if (!std::isfinite(Isp_s) || Isp_s <= 0.0) {
+        throw std::invalid_argument("Specific impulse must be positive");
+    }
+    if (!std::isfinite(delta_v_ms) || delta_v_ms < 0.0) {
+        throw std::invalid_argument("Delta-v must be non-negative");
+    }
+    if (!std::isfinite(power_W) || power_W <= 0.0) {
+        throw std::invalid_argument("Power must be positive");
+    }
+    if (!std::isfinite(total_mass_kg) || total_mass_kg <= 0.0) {
+        throw std::invalid_argument("Total mass must be positive");
+    }
+    if (!std::isfinite(efficiency) || efficiency <= 0.0 || efficiency > 1.0) {
         throw std::invalid_argument("Efficiency must be in (0, 1]");
     }
 
@@ -64,13 +79,19 @@ OptimizationResult optimize_isp_for_mission(double delta_v_ms,
                                             double total_mass_kg,
                                             double efficiency,
                                             double max_burn_time_s) {
-    if (delta_v_ms <= 0.0)    throw std::invalid_argument("Delta-v must be positive");
-    if (power_W <= 0.0)       throw std::invalid_argument("Power must be positive");
-    if (total_mass_kg <= 0.0) throw std::invalid_argument("Total mass must be positive");
-    if (efficiency <= 0.0 || efficiency > 1.0) {
+    if (!std::isfinite(delta_v_ms) || delta_v_ms <= 0.0) {
+        throw std::invalid_argument("Delta-v must be positive");
+    }
+    if (!std::isfinite(power_W) || power_W <= 0.0) {
+        throw std::invalid_argument("Power must be positive");
+    }
+    if (!std::isfinite(total_mass_kg) || total_mass_kg <= 0.0) {
+        throw std::invalid_argument("Total mass must be positive");
+    }
+    if (!std::isfinite(efficiency) || efficiency <= 0.0 || efficiency > 1.0) {
         throw std::invalid_argument("Efficiency must be in (0, 1]");
     }
-    if (max_burn_time_s <= 0.0) {
+    if (!std::isfinite(max_burn_time_s) || max_burn_time_s <= 0.0) {
         throw std::invalid_argument("Maximum burn time must be positive");
     }
 

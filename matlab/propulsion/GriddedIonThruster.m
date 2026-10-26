@@ -60,15 +60,15 @@ classdef GriddedIonThruster
         %       discharge_loss        - Discharge loss (W/A), default 200.0
 
             arguments
-                beam_voltage          (1,1) double {mustBePositive}
-                beam_current          (1,1) double {mustBePositive}
-                screen_grid_voltage   (1,1) double
-                accel_grid_voltage    (1,1) double
-                mass_flow_rate        (1,1) double {mustBePositive}
-                propellant_mass       (1,1) double {mustBePositive} = 2.18e-25
-                grid_spacing          (1,1) double {mustBePositive} = 1e-3
-                screen_aperture_radius(1,1) double {mustBePositive} = 1e-3
-                discharge_loss        (1,1) double {mustBeNonnegative} = 200.0
+                beam_voltage          (1,1) double {mustBePositive, mustBeFinite}
+                beam_current          (1,1) double {mustBePositive, mustBeFinite}
+                screen_grid_voltage   (1,1) double {mustBeFinite}
+                accel_grid_voltage    (1,1) double {mustBeFinite}
+                mass_flow_rate        (1,1) double {mustBePositive, mustBeFinite}
+                propellant_mass       (1,1) double {mustBePositive, mustBeFinite} = 2.18e-25
+                grid_spacing          (1,1) double {mustBePositive, mustBeFinite} = 1e-3
+                screen_aperture_radius(1,1) double {mustBePositive, mustBeFinite} = 1e-3
+                discharge_loss        (1,1) double {mustBeNonnegative, mustBeFinite} = 200.0
             end
 
             obj.beam_voltage           = beam_voltage;

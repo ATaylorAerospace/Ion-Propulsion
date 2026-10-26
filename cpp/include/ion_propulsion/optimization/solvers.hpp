@@ -32,7 +32,7 @@ inline constexpr double isp_search_max_s = 20000.0;
  * @param Isp_s      Specific impulse (s).
  * @param delta_v_ms Required delta-v (m/s).
  * @return Payload mass fraction (0 to 1).
- * @throws std::invalid_argument if the specific impulse is not positive.
+ * @throws std::invalid_argument if the specific impulse is not positive or delta-v is negative.
  */
 [[nodiscard]] double optimal_payload_fraction(double Isp_s, double delta_v_ms);
 
@@ -47,7 +47,8 @@ inline constexpr double isp_search_max_s = 20000.0;
  * @param Isp_s        Specific impulse (s).
  * @param delta_v_ms   Required delta-v (m/s).
  * @return Propellant mass (kg).
- * @throws std::invalid_argument if the initial mass or specific impulse is not positive.
+ * @throws std::invalid_argument if the initial mass or specific impulse is not positive,
+ *         or if delta-v is negative.
  */
 [[nodiscard]] double propellant_mass(double m_initial_kg, double Isp_s, double delta_v_ms);
 
@@ -61,7 +62,7 @@ inline constexpr double isp_search_max_s = 20000.0;
  * @param propellant_mass_kg  Available propellant (kg).
  * @param mass_flow_rate_kgs  Propellant consumption rate (kg/s).
  * @return Mission lifetime (s).
- * @throws std::invalid_argument if the mass flow rate is not positive.
+ * @throws std::invalid_argument if propellant mass is negative or mass flow rate is not positive.
  */
 [[nodiscard]] double mission_lifetime(double propellant_mass_kg, double mass_flow_rate_kgs);
 

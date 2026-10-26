@@ -1,23 +1,22 @@
 # Author: A Taylor | Purpose: Unit tests for gridded ion thruster model | Ref: Goebel/Katz/Vallado
 
-import pytest
 import astropy.units as u
+import pytest
 
-from ion_propulsion.propulsion.thruster import GriddedIonThruster, G0
-
+from ion_propulsion.propulsion.thruster import G0, GriddedIonThruster
 
 # ---------------------------------------------------------------------------
 # Reference operating points
 # ---------------------------------------------------------------------------
 # NSTAR at full power (Deep Space 1): 1100 V beam, 1.76 A, 3.0 mg/s xenon.
 # Flight performance: Isp ~3100 s, thrust ~92 mN, input power ~2.3 kW.
-NSTAR = dict(
-    beam_voltage_V=1100.0,
-    beam_current_A=1.76,
-    screen_grid_voltage_V=1100.0,
-    accel_grid_voltage_V=-180.0,
-    mass_flow_rate_kgs=3.0e-6,
-)
+NSTAR = {
+    "beam_voltage_V": 1100.0,
+    "beam_current_A": 1.76,
+    "screen_grid_voltage_V": 1100.0,
+    "accel_grid_voltage_V": -180.0,
+    "mass_flow_rate_kgs": 3.0e-6,
+}
 NSTAR_FLIGHT_ISP_S = 3100.0
 NSTAR_FLIGHT_THRUST_N = 0.092
 NSTAR_FLIGHT_POWER_W = 2300.0
@@ -115,7 +114,9 @@ class TestHighEfficiencyRequirement:
 
 class TestThrustAndUnits:
     def test_thrust_equals_eta_m_mdot_vb(self, nstar):
-        expected = nstar.mass_utilization * NSTAR["mass_flow_rate_kgs"] * nstar.exhaust_velocity_ms.value
+        expected = (
+            nstar.mass_utilization * NSTAR["mass_flow_rate_kgs"] * nstar.exhaust_velocity_ms.value
+        )
         assert rel_close(nstar.thrust_N.value, expected)
 
     def test_quantities_carry_expected_units(self, nstar):
@@ -144,7 +145,9 @@ class TestChildLangmuir:
         assert neg.child_langmuir_current_A == pos.child_langmuir_current_A
 
     def test_non_positive_total_voltage_raises(self):
-        t = GriddedIonThruster(**{**NSTAR, "screen_grid_voltage_V": -500.0, "accel_grid_voltage_V": 100.0})
+        t = GriddedIonThruster(
+            **{**NSTAR, "screen_grid_voltage_V": -500.0, "accel_grid_voltage_V": 100.0}
+        )
         with pytest.raises(ValueError):
             _ = t.child_langmuir_current_A
 
@@ -154,9 +157,13 @@ class TestValidation:
         "override",
         [
             {"beam_voltage_V": 0.0},
+            {"beam_voltage_V": float("nan")},
             {"beam_current_A": 0.0},
+            {"screen_grid_voltage_V": float("nan")},
+            {"accel_grid_voltage_V": float("inf")},
             {"mass_flow_rate_kgs": 0.0},
             {"grid_spacing_m": 0.0},
+            {"screen_aperture_radius_m": 0.0},
             {"propellant_mass_kg": 0.0},
             {"discharge_loss_WperA": -1.0},
         ],
@@ -180,3 +187,4 @@ class TestNeutralizer:
 
     def test_custom_power(self, nstar):
         assert rel_close(nstar.neutralizer_power_W(15.0, 1.5).value, 22.5)
+

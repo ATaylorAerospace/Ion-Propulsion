@@ -1,8 +1,7 @@
 # Author: A Taylor | Purpose: Gridded ion thruster performance model | Ref: Goebel/Katz/Vallado
 
-import numpy as np
 import astropy.units as u
-
+import numpy as np
 
 # ---------------------------------------------------------------------------
 # Constants (cross-validated across all language implementations)
@@ -63,17 +62,23 @@ class GriddedIonThruster:
         screen_aperture_radius_m: float = 1.0e-3,
         discharge_loss_WperA: float = 200.0,
     ):
-        if beam_voltage_V <= 0:
+        if not np.isfinite(beam_voltage_V) or beam_voltage_V <= 0:
             raise ValueError("Beam voltage must be positive")
-        if beam_current_A <= 0:
+        if not np.isfinite(beam_current_A) or beam_current_A <= 0:
             raise ValueError("Beam current must be positive")
-        if mass_flow_rate_kgs <= 0:
+        if not np.isfinite(screen_grid_voltage_V):
+            raise ValueError("Screen grid voltage must be finite")
+        if not np.isfinite(accel_grid_voltage_V):
+            raise ValueError("Accelerator grid voltage must be finite")
+        if not np.isfinite(mass_flow_rate_kgs) or mass_flow_rate_kgs <= 0:
             raise ValueError("Mass flow rate must be positive")
-        if grid_spacing_m <= 0:
+        if not np.isfinite(grid_spacing_m) or grid_spacing_m <= 0:
             raise ValueError("Grid spacing must be positive")
-        if propellant_mass_kg <= 0:
+        if not np.isfinite(screen_aperture_radius_m) or screen_aperture_radius_m <= 0:
+            raise ValueError("Screen aperture radius must be positive")
+        if not np.isfinite(propellant_mass_kg) or propellant_mass_kg <= 0:
             raise ValueError("Propellant mass must be positive")
-        if discharge_loss_WperA < 0:
+        if not np.isfinite(discharge_loss_WperA) or discharge_loss_WperA < 0:
             raise ValueError("Discharge loss must be non-negative")
 
         self.beam_voltage_V = beam_voltage_V
@@ -287,7 +292,7 @@ class GriddedIonThruster:
         erosion_rate : astropy.units.Quantity
             Mass erosion rate in kg/s.
         """
-        if sputter_yield <= 0:
+        if not np.isfinite(sputter_yield) or sputter_yield <= 0:
             raise ValueError("Sputter yield must be positive")
         erosion = sputter_yield * self.beam_current_A * u.A * M_MOLYBDENUM / E_CHARGE
         return erosion.to(u.kg / u.s)
@@ -313,6 +318,11 @@ class GriddedIonThruster:
         P_neut : astropy.units.Quantity
             Neutralizer power in watts.
         """
-        if keeper_voltage <= 0 or keeper_current <= 0:
+        if (
+            not (np.isfinite(keeper_voltage) and np.isfinite(keeper_current))
+            or keeper_voltage <= 0
+            or keeper_current <= 0
+        ):
             raise ValueError("Keeper voltage and current must be positive")
         return (keeper_voltage * keeper_current) * u.W
+

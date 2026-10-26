@@ -1,8 +1,7 @@
 # Author: A Taylor | Purpose: Mission optimization and Tsiolkovsky-based solvers | Ref: Goebel/Katz/Vallado
 
-import numpy as np
 import astropy.units as u
-
+import numpy as np
 
 # ---------------------------------------------------------------------------
 # Constants (cross-validated across all language implementations)
@@ -39,10 +38,12 @@ def optimal_payload_fraction(Isp_s: float, delta_v_ms: float) -> float:
     Raises
     ------
     ValueError
-        If the specific impulse is not positive.
+        If the specific impulse is not positive, delta-v is negative, or either input is not finite.
     """
-    if Isp_s <= 0:
+    if not np.isfinite(Isp_s) or Isp_s <= 0:
         raise ValueError("Specific impulse must be positive")
+    if not np.isfinite(delta_v_ms) or delta_v_ms < 0:
+        raise ValueError("Delta-v must be non-negative")
     return float(np.exp(-delta_v_ms / (Isp_s * G0)))
 
 
@@ -70,9 +71,9 @@ def propellant_mass_kg(m_initial_kg: float, Isp_s: float, delta_v_ms: float):
     Raises
     ------
     ValueError
-        If the initial mass or specific impulse is not positive.
+        If the initial mass or specific impulse is not positive, delta-v is negative, or any input is not finite.
     """
-    if m_initial_kg <= 0:
+    if not np.isfinite(m_initial_kg) or m_initial_kg <= 0:
         raise ValueError("Initial mass must be positive")
     m_prop = m_initial_kg * (1.0 - optimal_payload_fraction(Isp_s, delta_v_ms))
     return m_prop * u.kg
@@ -100,9 +101,11 @@ def mission_lifetime_s(propellant_mass_kg_val: float, mass_flow_rate_kgs: float)
     Raises
     ------
     ValueError
-        If the mass flow rate is not positive.
+        If the propellant mass is negative, mass flow rate is not positive, or either input is not finite.
     """
-    if mass_flow_rate_kgs <= 0:
+    if not np.isfinite(propellant_mass_kg_val) or propellant_mass_kg_val < 0:
+        raise ValueError("Propellant mass must be non-negative")
+    if not np.isfinite(mass_flow_rate_kgs) or mass_flow_rate_kgs <= 0:
         raise ValueError("Mass flow rate must be positive")
     t = propellant_mass_kg_val / mass_flow_rate_kgs
     return t * u.s
@@ -151,13 +154,15 @@ def power_limited_burn_time_s(
     t_b : float
         Burn time in seconds.
     """
-    if Isp_s <= 0:
+    if not np.isfinite(Isp_s) or Isp_s <= 0:
         raise ValueError("Specific impulse must be positive")
-    if power_W <= 0:
+    if not np.isfinite(delta_v_ms) or delta_v_ms < 0:
+        raise ValueError("Delta-v must be non-negative")
+    if not np.isfinite(power_W) or power_W <= 0:
         raise ValueError("Power must be positive")
-    if total_mass_kg <= 0:
+    if not np.isfinite(total_mass_kg) or total_mass_kg <= 0:
         raise ValueError("Total mass must be positive")
-    if eta <= 0 or eta > 1:
+    if not np.isfinite(eta) or eta <= 0 or eta > 1:
         raise ValueError("Efficiency must be in (0, 1]")
 
     ve = Isp_s * G0
@@ -217,15 +222,15 @@ def optimize_isp_for_mission(
         specific impulse cannot deliver the delta-v within the burn-time
         budget.
     """
-    if delta_v_ms <= 0:
+    if not np.isfinite(delta_v_ms) or delta_v_ms <= 0:
         raise ValueError("Delta-v must be positive")
-    if power_W <= 0:
+    if not np.isfinite(power_W) or power_W <= 0:
         raise ValueError("Power must be positive")
-    if total_mass_kg <= 0:
+    if not np.isfinite(total_mass_kg) or total_mass_kg <= 0:
         raise ValueError("Total mass must be positive")
-    if eta <= 0 or eta > 1:
+    if not np.isfinite(eta) or eta <= 0 or eta > 1:
         raise ValueError("Efficiency must be in (0, 1]")
-    if max_burn_time_s <= 0:
+    if not np.isfinite(max_burn_time_s) or max_burn_time_s <= 0:
         raise ValueError("Maximum burn time must be positive")
 
     def burn_time(isp: float) -> float:
@@ -252,3 +257,4 @@ def optimize_isp_for_mission(
         best_isp = lo
 
     return best_isp * u.s, optimal_payload_fraction(best_isp, delta_v_ms)
+
