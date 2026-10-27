@@ -5,6 +5,7 @@
 #include "ion_propulsion/constants.hpp"
 
 #include <cmath>
+#include <limits>
 #include <stdexcept>
 
 using namespace ion_propulsion::propulsion;
@@ -149,8 +150,11 @@ TEST(PropulsionTest, Constructor_RejectsInvalidInputs) {
     EXPECT_THROW(GriddedIonThruster(1100.0, 0.0,  1100.0, -180.0, 3.0e-6), std::invalid_argument);
     EXPECT_THROW(GriddedIonThruster(1100.0, 1.76, 1100.0, -180.0, 0.0),    std::invalid_argument);
     EXPECT_THROW(GriddedIonThruster(1100.0, 1.76, 1100.0, -180.0, 3.0e-6, m_xenon, 0.0), std::invalid_argument);
+    EXPECT_THROW(GriddedIonThruster(1100.0, 1.76, 1100.0, -180.0, 3.0e-6, m_xenon, 1e-3, 0.0), std::invalid_argument);
     EXPECT_THROW(GriddedIonThruster(1100.0, 1.76, 1100.0, -180.0, 3.0e-6, 0.0),     std::invalid_argument);
     EXPECT_THROW(GriddedIonThruster(1100.0, 1.76, 1100.0, -180.0, 3.0e-6, m_xenon, 1e-3, 1e-3, -1.0),
+                 std::invalid_argument);
+    EXPECT_THROW(GriddedIonThruster(std::numeric_limits<double>::quiet_NaN(), 1.76, 1100.0, -180.0, 3.0e-6),
                  std::invalid_argument);
 }
 

@@ -5,6 +5,7 @@
 #include "ion_propulsion/constants.hpp"
 
 #include <cmath>
+#include <limits>
 #include <stdexcept>
 
 using namespace ion_propulsion::optimization;
@@ -54,6 +55,9 @@ TEST(OptimizationTest, PayloadFraction_Monotonic) {
 
 TEST(OptimizationTest, PayloadFraction_InvalidIspThrows) {
     EXPECT_THROW((void)optimal_payload_fraction(0.0, dv), std::invalid_argument);
+    EXPECT_THROW((void)optimal_payload_fraction(3000.0, -100.0), std::invalid_argument);
+    EXPECT_THROW((void)optimal_payload_fraction(std::numeric_limits<double>::quiet_NaN(), dv),
+                 std::invalid_argument);
 }
 
 TEST(OptimizationTest, PropellantMass_Golden) {
@@ -66,6 +70,9 @@ TEST(OptimizationTest, PropellantMass_ZeroDeltaV) {
 
 TEST(OptimizationTest, PropellantMass_InvalidMassThrows) {
     EXPECT_THROW((void)propellant_mass(0.0, 3000.0, 4000.0), std::invalid_argument);
+    EXPECT_THROW((void)propellant_mass(1000.0, 3000.0, -1.0), std::invalid_argument);
+    EXPECT_THROW((void)propellant_mass(std::numeric_limits<double>::quiet_NaN(), 3000.0, 4000.0),
+                 std::invalid_argument);
 }
 
 TEST(OptimizationTest, MissionLifetime_Golden) {
@@ -74,6 +81,9 @@ TEST(OptimizationTest, MissionLifetime_Golden) {
 
 TEST(OptimizationTest, MissionLifetime_InvalidFlowThrows) {
     EXPECT_THROW((void)mission_lifetime(100.0, 0.0), std::invalid_argument);
+    EXPECT_THROW((void)mission_lifetime(-1.0, 3.5e-6), std::invalid_argument);
+    EXPECT_THROW((void)mission_lifetime(std::numeric_limits<double>::quiet_NaN(), 3.5e-6),
+                 std::invalid_argument);
 }
 
 // ---------------------------------------------------------------------------
@@ -96,6 +106,7 @@ TEST(OptimizationTest, BurnTime_InverselyProportionalToPower) {
 
 TEST(OptimizationTest, BurnTime_InvalidEfficiencyThrows) {
     EXPECT_THROW((void)power_limited_burn_time(3000.0, dv, 5000.0, m0, 1.5), std::invalid_argument);
+    EXPECT_THROW((void)power_limited_burn_time(3000.0, -10.0, 5000.0, m0, eta), std::invalid_argument);
 }
 
 // ---------------------------------------------------------------------------
@@ -148,4 +159,6 @@ TEST(OptimizationTest, Optimize_InvalidInputsThrow) {
     EXPECT_THROW((void)optimize_isp_for_mission(dv,  5000.0, m0, 0.0),  std::invalid_argument);
     EXPECT_THROW((void)optimize_isp_for_mission(dv,  5000.0, m0, 1.5),  std::invalid_argument);
     EXPECT_THROW((void)optimize_isp_for_mission(dv,  5000.0, m0, eta, 0.0), std::invalid_argument);
+    EXPECT_THROW((void)optimize_isp_for_mission(std::numeric_limits<double>::quiet_NaN(), 5000.0, m0, eta),
+                 std::invalid_argument);
 }

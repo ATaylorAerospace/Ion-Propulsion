@@ -1,8 +1,7 @@
 # Author: A Taylor | Purpose: Orbital mechanics and mission profile calculations | Ref: Goebel/Katz/Vallado
 
-import numpy as np
 import astropy.units as u
-
+import numpy as np
 
 # ---------------------------------------------------------------------------
 # Constants (cross-validated across all language implementations)
@@ -47,9 +46,9 @@ def geo_transfer_delta_v(r_park_km: float):
     Raises
     ------
     ValueError
-        If the parking altitude is not positive.
+        If the parking altitude is not positive or not finite.
     """
-    if r_park_km <= 0:
+    if not np.isfinite(r_park_km) or r_park_km <= 0:
         raise ValueError("Parking orbit altitude must be positive")
 
     r_park = R_EARTH + r_park_km * u.km
@@ -95,9 +94,14 @@ def lagrange_point_l1(m1_kg: float, m2_kg: float, R_m: float):
     Raises
     ------
     ValueError
-        If any input is not positive.
+        If any input is not positive or not finite.
     """
-    if m1_kg <= 0 or m2_kg <= 0 or R_m <= 0:
+    if (
+        not (np.isfinite(m1_kg) and np.isfinite(m2_kg) and np.isfinite(R_m))
+        or m1_kg <= 0
+        or m2_kg <= 0
+        or R_m <= 0
+    ):
         raise ValueError("Masses and separation must be positive")
 
     R = R_m * u.m
@@ -131,11 +135,13 @@ def low_thrust_transfer_time(delta_v_ms: float, thrust_N: float, mass_kg: float)
     Raises
     ------
     ValueError
-        If thrust or mass is not positive.
+        If delta-v is negative, thrust or mass is not positive, or any input is not finite.
     """
-    if thrust_N <= 0:
+    if not np.isfinite(delta_v_ms) or delta_v_ms < 0:
+        raise ValueError("Delta-v must be non-negative")
+    if not np.isfinite(thrust_N) or thrust_N <= 0:
         raise ValueError("Thrust must be positive")
-    if mass_kg <= 0:
+    if not np.isfinite(mass_kg) or mass_kg <= 0:
         raise ValueError("Mass must be positive")
 
     t = (mass_kg * u.kg * delta_v_ms * u.m / u.s) / (thrust_N * u.N)
@@ -168,12 +174,17 @@ def spiral_delta_v(r_initial_m: float, r_final_m: float):
     Raises
     ------
     ValueError
-        If either radius is not positive.
+        If either radius is not positive or not finite.
     """
-    if r_initial_m <= 0 or r_final_m <= 0:
+    if (
+        not (np.isfinite(r_initial_m) and np.isfinite(r_final_m))
+        or r_initial_m <= 0
+        or r_final_m <= 0
+    ):
         raise ValueError("Orbital radii must be positive")
 
     r_i = r_initial_m * u.m
     r_f = r_final_m * u.m
     delta_v = np.sqrt(MU_EARTH / r_i) - np.sqrt(MU_EARTH / r_f)
     return delta_v.to(u.m / u.s)
+

@@ -29,12 +29,30 @@ GriddedIonThruster::GriddedIonThruster(double beam_voltage,
     , screen_aperture_radius_{screen_aperture_radius}
     , discharge_loss_{discharge_loss}
 {
-    if (beam_voltage_ <= 0.0)    throw std::invalid_argument("Beam voltage must be positive");
-    if (beam_current_ <= 0.0)    throw std::invalid_argument("Beam current must be positive");
-    if (mass_flow_rate_ <= 0.0)  throw std::invalid_argument("Mass flow rate must be positive");
-    if (grid_spacing_ <= 0.0)    throw std::invalid_argument("Grid spacing must be positive");
-    if (propellant_mass_ <= 0.0) throw std::invalid_argument("Propellant mass must be positive");
-    if (discharge_loss_ < 0.0)   throw std::invalid_argument("Discharge loss must be non-negative");
+    if (!std::isfinite(beam_voltage_) || beam_voltage_ <= 0.0) {
+        throw std::invalid_argument("Beam voltage must be positive");
+    }
+    if (!std::isfinite(beam_current_) || beam_current_ <= 0.0) {
+        throw std::invalid_argument("Beam current must be positive");
+    }
+    if (!std::isfinite(screen_grid_voltage_) || !std::isfinite(accel_grid_voltage_)) {
+        throw std::invalid_argument("Screen and accelerator grid voltages must be finite");
+    }
+    if (!std::isfinite(mass_flow_rate_) || mass_flow_rate_ <= 0.0) {
+        throw std::invalid_argument("Mass flow rate must be positive");
+    }
+    if (!std::isfinite(grid_spacing_) || grid_spacing_ <= 0.0) {
+        throw std::invalid_argument("Grid spacing must be positive");
+    }
+    if (!std::isfinite(screen_aperture_radius_) || screen_aperture_radius_ <= 0.0) {
+        throw std::invalid_argument("Screen aperture radius must be positive");
+    }
+    if (!std::isfinite(propellant_mass_) || propellant_mass_ <= 0.0) {
+        throw std::invalid_argument("Propellant mass must be positive");
+    }
+    if (!std::isfinite(discharge_loss_) || discharge_loss_ < 0.0) {
+        throw std::invalid_argument("Discharge loss must be non-negative");
+    }
 }
 
 double GriddedIonThruster::exhaust_velocity() const {
@@ -80,7 +98,7 @@ double GriddedIonThruster::ion_extraction_efficiency() const {
 double GriddedIonThruster::child_langmuir_current() const {
     // J_CL = (4/9) * eps0 * sqrt(2*e/m_ion) * V_total^(3/2) / d^2,  V_total = V_screen + |V_accel|
     const double V_total = screen_grid_voltage_ + std::fabs(accel_grid_voltage_);
-    if (V_total <= 0.0) {
+    if (!std::isfinite(V_total) || V_total <= 0.0) {
         throw std::invalid_argument("Total extraction voltage (screen + |accel|) must be positive");
     }
     return (4.0 / 9.0) * epsilon_0
@@ -90,7 +108,7 @@ double GriddedIonThruster::child_langmuir_current() const {
 }
 
 double GriddedIonThruster::grid_erosion_rate(double sputter_yield) const {
-    if (sputter_yield <= 0.0) {
+    if (!std::isfinite(sputter_yield) || sputter_yield <= 0.0) {
         throw std::invalid_argument("Sputter yield must be positive");
     }
     // erosion = Y * I_beam * m_Mo / e
@@ -99,7 +117,8 @@ double GriddedIonThruster::grid_erosion_rate(double sputter_yield) const {
 
 double GriddedIonThruster::neutralizer_power(double keeper_voltage,
                                               double keeper_current) const {
-    if (keeper_voltage <= 0.0 || keeper_current <= 0.0) {
+    if (!std::isfinite(keeper_voltage) || keeper_voltage <= 0.0
+        || !std::isfinite(keeper_current) || keeper_current <= 0.0) {
         throw std::invalid_argument("Keeper voltage and current must be positive");
     }
     // P_neut = V_keeper * I_keeper

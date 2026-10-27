@@ -5,6 +5,7 @@
 #include "ion_propulsion/constants.hpp"
 
 #include <cmath>
+#include <limits>
 #include <stdexcept>
 
 using namespace ion_propulsion::dynamics;
@@ -48,6 +49,8 @@ TEST(DynamicsTest, GeoTransfer_HigherParkingOrbitNeedsLess) {
 
 TEST(DynamicsTest, GeoTransfer_InvalidAltitudeThrows) {
     EXPECT_THROW((void)geo_transfer_delta_v(-100.0), std::invalid_argument);
+    EXPECT_THROW((void)geo_transfer_delta_v(0.0), std::invalid_argument);
+    EXPECT_THROW((void)geo_transfer_delta_v(std::numeric_limits<double>::quiet_NaN()), std::invalid_argument);
 }
 
 // ---------------------------------------------------------------------------
@@ -61,6 +64,7 @@ TEST(DynamicsTest, L1_InvalidInputsThrow) {
     EXPECT_THROW((void)lagrange_point_l1(-1.0, 1.0, 1.0), std::invalid_argument);
     EXPECT_THROW((void)lagrange_point_l1(1.0, -1.0, 1.0), std::invalid_argument);
     EXPECT_THROW((void)lagrange_point_l1(1.0, 1.0, 0.0),  std::invalid_argument);
+    EXPECT_THROW((void)lagrange_point_l1(std::numeric_limits<double>::quiet_NaN(), 1.0, 1.0), std::invalid_argument);
 }
 
 // ---------------------------------------------------------------------------
@@ -71,8 +75,11 @@ TEST(DynamicsTest, LowThrust_Golden) {
 }
 
 TEST(DynamicsTest, LowThrust_InvalidInputsThrow) {
+    EXPECT_THROW((void)low_thrust_transfer_time(-1.0, 0.1, 500.0),   std::invalid_argument);
     EXPECT_THROW((void)low_thrust_transfer_time(5000.0, 0.0, 500.0), std::invalid_argument);
     EXPECT_THROW((void)low_thrust_transfer_time(5000.0, 0.1, 0.0),   std::invalid_argument);
+    EXPECT_THROW((void)low_thrust_transfer_time(std::numeric_limits<double>::quiet_NaN(), 0.1, 500.0),
+                 std::invalid_argument);
 }
 
 // ---------------------------------------------------------------------------
@@ -89,4 +96,6 @@ TEST(DynamicsTest, Spiral_SameRadiusIsZero) {
 TEST(DynamicsTest, Spiral_InvalidRadiiThrow) {
     EXPECT_THROW((void)spiral_delta_v(0.0, GEO_radius), std::invalid_argument);
     EXPECT_THROW((void)spiral_delta_v(R_earth, -1.0),   std::invalid_argument);
+    EXPECT_THROW((void)spiral_delta_v(std::numeric_limits<double>::quiet_NaN(), GEO_radius),
+                 std::invalid_argument);
 }

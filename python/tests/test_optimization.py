@@ -1,7 +1,7 @@
 # Author: A Taylor | Purpose: Unit tests for optimization and Tsiolkovsky solvers | Ref: Goebel/Katz/Vallado
 
-import pytest
 import astropy.units as u
+import pytest
 
 from ion_propulsion.optimization.solvers import (
     ISP_SEARCH_MAX_S,
@@ -47,14 +47,20 @@ class TestOptimalPayloadFraction:
         assert optimal_payload_fraction(4000.0, DV) > optimal_payload_fraction(2000.0, DV)
         assert optimal_payload_fraction(3000.0, 2000.0) > optimal_payload_fraction(3000.0, 8000.0)
 
-    def test_non_positive_isp_raises(self):
+    @pytest.mark.parametrize(
+        "isp, dv",
+        [(0.0, DV), (3000.0, -100.0), (float("nan"), DV), (3000.0, float("nan"))],
+    )
+    def test_invalid_inputs_raise(self, isp, dv):
         with pytest.raises(ValueError):
-            optimal_payload_fraction(0.0, DV)
+            optimal_payload_fraction(isp, dv)
 
 
 class TestPropellantMass:
     def test_golden(self):
-        assert rel_close(propellant_mass_kg(1000.0, 3000.0, 4000.0).value, MPROP_1000KG_3000S_4000MS)
+        assert rel_close(
+            propellant_mass_kg(1000.0, 3000.0, 4000.0).value, MPROP_1000KG_3000S_4000MS
+        )
 
     def test_units(self):
         assert propellant_mass_kg(1000.0, 3000.0, 4000.0).unit == u.kg
@@ -62,9 +68,13 @@ class TestPropellantMass:
     def test_zero_delta_v_needs_no_propellant(self):
         assert propellant_mass_kg(1000.0, 3000.0, 0.0).value == 0.0
 
-    def test_non_positive_mass_raises(self):
+    @pytest.mark.parametrize(
+        "m0, isp, dv",
+        [(0.0, 3000.0, 4000.0), (1000.0, 3000.0, -1.0), (float("nan"), 3000.0, 4000.0)],
+    )
+    def test_invalid_inputs_raise(self, m0, isp, dv):
         with pytest.raises(ValueError):
-            propellant_mass_kg(0.0, 3000.0, 4000.0)
+            propellant_mass_kg(m0, isp, dv)
 
 
 class TestMissionLifetime:
@@ -74,9 +84,13 @@ class TestMissionLifetime:
     def test_units(self):
         assert mission_lifetime_s(100.0, 3.5e-6).unit == u.s
 
-    def test_non_positive_flow_rate_raises(self):
+    @pytest.mark.parametrize(
+        "m_prop, m_dot",
+        [(100.0, 0.0), (-1.0, 3.5e-6), (float("nan"), 3.5e-6)],
+    )
+    def test_invalid_inputs_raise(self, m_prop, m_dot):
         with pytest.raises(ValueError):
-            mission_lifetime_s(100.0, 0.0)
+            mission_lifetime_s(m_prop, m_dot)
 
 
 class TestPowerLimitedBurnTime:
@@ -94,9 +108,17 @@ class TestPowerLimitedBurnTime:
         t_10kw = power_limited_burn_time_s(3000.0, DV, 10000.0, M0, ETA)
         assert rel_close(t_5kw / t_10kw, 2.0)
 
-    def test_invalid_efficiency_raises(self):
+    @pytest.mark.parametrize(
+        "args",
+        [
+            (3000.0, DV, 5000.0, M0, 1.5),
+            (3000.0, -1.0, 5000.0, M0, ETA),
+            (float("nan"), DV, 5000.0, M0, ETA),
+        ],
+    )
+    def test_invalid_inputs_raise(self, args):
         with pytest.raises(ValueError):
-            power_limited_burn_time_s(3000.0, DV, 5000.0, M0, 1.5)
+            power_limited_burn_time_s(*args)
 
 
 class TestOptimizeIspForMission:
@@ -130,6 +152,7 @@ class TestOptimizeIspForMission:
         "kwargs",
         [
             {"delta_v_ms": 0.0},
+            {"delta_v_ms": float("nan")},
             {"power_W": 0.0},
             {"total_mass_kg": 0.0},
             {"eta": 0.0},
@@ -146,3 +169,4 @@ class TestOptimizeIspForMission:
     def test_isp_carries_units(self):
         isp, _ = optimize_isp_for_mission(DV, 5000.0, M0, ETA)
         assert isp.unit == u.s
+

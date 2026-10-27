@@ -38,8 +38,8 @@ classdef test_propulsion < matlab.unittest.TestCase
         function createThrusters(testCase)
             testCase.nstar = GriddedIonThruster(1100, 1.76, 1100, -180, ...
                 testCase.NstarMassFlow);
-            testCase.highVoltage = GriddedIonThruster(1500, 2.0, 1100, -200, ...
-                3.5e-6, 2.18e-25, 1e-3, 1e-3, 200);
+            testCase.highVoltage = GriddedIonThruster(1500, 1.8, 1500, 250, ...
+                3.5e-6, 2.18e-25, 0.7e-3, 0.95e-3, 200);
         end
     end
 
@@ -142,6 +142,7 @@ classdef test_propulsion < matlab.unittest.TestCase
             testCase.verifyError(@() GriddedIonThruster(1100, 0,    1100, -180, 3e-6), 'MATLAB:validators:mustBePositive');
             testCase.verifyError(@() GriddedIonThruster(1100, 1.76, 1100, -180, 0),    'MATLAB:validators:mustBePositive');
             testCase.verifyError(@() GriddedIonThruster(1100, 1.76, 1100, -180, 3e-6, 2.18e-25, 0), 'MATLAB:validators:mustBePositive');
+            testCase.verifyError(@() GriddedIonThruster(1100, 1.76, 1100, -180, 3e-6, 2.18e-25, 1e-3, 0), 'MATLAB:validators:mustBePositive');
             testCase.verifyError(@() GriddedIonThruster(1100, 1.76, 1100, -180, 3e-6, 0), 'MATLAB:validators:mustBePositive');
             testCase.verifyError(@() GriddedIonThruster(1100, 1.76, 1100, -180, 3e-6, 2.18e-25, 1e-3, 1e-3, -1), 'MATLAB:validators:mustBeNonnegative');
         end

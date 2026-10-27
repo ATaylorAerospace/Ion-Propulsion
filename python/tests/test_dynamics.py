@@ -1,7 +1,7 @@
 # Author: A Taylor | Purpose: Unit tests for orbital dynamics module | Ref: Goebel/Katz/Vallado
 
-import pytest
 import astropy.units as u
+import pytest
 
 from ion_propulsion.dynamics.mission_profiles import (
     geo_transfer_delta_v,
@@ -48,9 +48,10 @@ class TestGeoTransferDeltaV:
         high = sum(q.value for q in geo_transfer_delta_v(1000.0))
         assert high < low
 
-    def test_non_positive_altitude_raises(self):
+    @pytest.mark.parametrize("alt", [-100.0, 0.0, float("nan"), float("inf")])
+    def test_non_positive_altitude_raises(self, alt):
         with pytest.raises(ValueError):
-            geo_transfer_delta_v(-100.0)
+            geo_transfer_delta_v(alt)
 
 
 class TestLagrangePointL1:
@@ -61,7 +62,16 @@ class TestLagrangePointL1:
     def test_units_are_metres(self):
         assert lagrange_point_l1(M_SUN, M_EARTH, AU_M).unit == u.m
 
-    @pytest.mark.parametrize("args", [(-1.0, 1.0, 1.0), (1.0, -1.0, 1.0), (1.0, 1.0, 0.0)])
+    @pytest.mark.parametrize(
+        "args",
+        [
+            (-1.0, 1.0, 1.0),
+            (1.0, -1.0, 1.0),
+            (1.0, 1.0, 0.0),
+            (float("nan"), 1.0, 1.0),
+            (1.0, float("inf"), 1.0),
+        ],
+    )
     def test_invalid_inputs_raise(self, args):
         with pytest.raises(ValueError):
             lagrange_point_l1(*args)
@@ -75,10 +85,18 @@ class TestLowThrustTransferTime:
     def test_units_are_seconds(self):
         assert low_thrust_transfer_time(1000.0, 0.05, 200.0).unit == u.s
 
-    @pytest.mark.parametrize("thrust, mass", [(0.0, 500.0), (0.1, 0.0)])
-    def test_invalid_inputs_raise(self, thrust, mass):
+    @pytest.mark.parametrize(
+        "dv, thrust, mass",
+        [
+            (-1.0, 0.1, 500.0),
+            (5000.0, 0.0, 500.0),
+            (5000.0, 0.1, 0.0),
+            (float("nan"), 0.1, 500.0),
+        ],
+    )
+    def test_invalid_inputs_raise(self, dv, thrust, mass):
         with pytest.raises(ValueError):
-            low_thrust_transfer_time(5000.0, thrust, mass)
+            low_thrust_transfer_time(dv, thrust, mass)
 
 
 class TestSpiralDeltaV:
@@ -92,6 +110,11 @@ class TestSpiralDeltaV:
     def test_same_radius_is_zero(self):
         assert spiral_delta_v(R_GEO_M, R_GEO_M).value == 0.0
 
-    def test_invalid_radii_raise(self):
+    @pytest.mark.parametrize(
+        "r_i, r_f",
+        [(0.0, R_GEO_M), (R_GEO_M, -1.0), (float("nan"), R_GEO_M)],
+    )
+    def test_invalid_radii_raise(self, r_i, r_f):
         with pytest.raises(ValueError):
-            spiral_delta_v(0.0, R_GEO_M)
+            spiral_delta_v(r_i, r_f)
+

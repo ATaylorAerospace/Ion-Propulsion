@@ -40,8 +40,9 @@ public:
      * @param discharge_loss        Discharge loss per beam ampere (W/A, numerically eV/ion).
      *                              Default 200.
      *
-     * @throws std::invalid_argument if a voltage, current, flow rate, gap, or ion mass
-     *         is not positive, or the discharge loss is negative.
+     * @throws std::invalid_argument if a voltage, current, flow rate, gap, aperture radius,
+     *         or ion mass is not positive, the discharge loss is negative, or any input is
+     *         non-finite.
      */
     GriddedIonThruster(double beam_voltage,
                        double beam_current,
